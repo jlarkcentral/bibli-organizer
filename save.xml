@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<root>
+    <groupe theme="francais">
+        <auteur nom="Victor Hugo"/>
+            <livre titre="Les Misérables" lu="true"/>
+                <notes>
+                    Ils sont très misérables.
+                <notes/>
+        <auteur nom="Voltaire"/>
+            <livre titre="Zadig" lu="false"/>
+            <livre titre="Candide" lu="true"/>
+                <notes>
+                    C'est nul.
+                <notes/>
+    </groupe>
+    <groupe theme="anglais">
+        <auteur nom="Beckford"/>
+            <livre titre="Vathek" lu="true"/>
+    </groupe>
+</root>
