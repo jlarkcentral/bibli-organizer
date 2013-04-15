@@ -9,6 +9,7 @@ class Livre
 {
 public:
     Livre(string unTitre);
+    string getTitre();
     void setLu(bool estLu);
     void setNotes(string desNotes);
 private:

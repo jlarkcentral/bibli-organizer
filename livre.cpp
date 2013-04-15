@@ -15,3 +15,8 @@ void Livre::setNotes(string desNotes)
 {
     notes = desNotes;
 }
+
+string Livre::getTitre()
+{
+    return titre;
+}
