@@ -7,8 +7,10 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    Biblio biblio;
+    Biblio * biblio = new Biblio();
+    biblio->loadXml("/home/primo/Documents/QtCreator/bibli-organizer/save.xml");
 
+    biblio->printBiblio();
 
     QApplication a(argc, argv);
     MainWindow w;

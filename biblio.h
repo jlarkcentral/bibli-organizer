@@ -1,7 +1,6 @@
 #ifndef BIBLIO_H
 #define BIBLIO_H
 
-#include <QTreeWidget>
 
 #include <fstream>
 #include <unistd.h>
@@ -24,7 +23,6 @@ public:
 
 private:
     vector<Groupe*> groupes;
-    QTreeWidget arbo;
 };
 
 #endif // BIBLIO_H
