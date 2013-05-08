@@ -42,6 +42,7 @@ signals:
 public slots:
     void changeFicheLivre(QTreeWidgetItem *item);
     void contextMenuAction(QAction *action);
+    void contextMenuChange(QTreeWidgetItem *item);
     
 private:
     QGridLayout * mainLayout;
@@ -50,6 +51,8 @@ private:
     vector<ItemIndex*> index;
     QMenu * contextMenu;
     QAction * addDossierAction;
+    QAction * addLivreAction;
+    QAction * renameAction;
     Biblio * biblio;
 };
 
