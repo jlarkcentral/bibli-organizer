@@ -12,21 +12,23 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    auteur.cpp \
-    groupe.cpp \
     livre.cpp \
     biblio.cpp \
     tinyxml/tinyxml.cpp \
     tinyxml/tinystr.cpp \
     tinyxml/tinyxmlerror.cpp \
-    tinyxml/tinyxmlparser.cpp
+    tinyxml/tinyxmlparser.cpp \
+    dossier.cpp \
+    fichelivre.cpp \
+    itemindex.cpp
 
 HEADERS  += mainwindow.h \
-    groupe.h \
     livre.h \
     biblio.h \
-    auteur.h \
     tinyxml/tinyxml.h \
-    tinyxml/tinystr.h
+    tinyxml/tinystr.h \
+    dossier.h \
+    fichelivre.h \
+    itemindex.h
 
 FORMS    += mainwindow.ui

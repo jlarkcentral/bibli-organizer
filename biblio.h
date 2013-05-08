@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "groupe.h"
+#include "dossier.h"
+
 #include "tinyxml/tinyxml.h"
 
 using namespace std;
@@ -15,14 +16,13 @@ class Biblio
 {
 public:
     Biblio();
-    void addGroupe(Groupe * unGroupe);
-    void delGroupe(int position);
+    Dossier * getDossierPrincipal();
     void loadXml(string filename);
-    void xmlToBiblio(TiXmlElement * element);
+    void xmlToBiblio(TiXmlElement *element, Dossier *unDossier);
+    void printBiblio(Dossier *unDossier);
     void printBiblio();
-
 private:
-    vector<Groupe*> groupes;
+    Dossier * dossierPrincipal;
 };
 
 #endif // BIBLIO_H

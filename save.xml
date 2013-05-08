@@ -1,25 +1,25 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
 <root>
-    <groupe theme="francais">
-        <auteur nom="Victor Hugo">
+    <dossier label="francais">
+        <dossier label="Victor Hugo">
             <livre titre="Les Misérables" lu="true">
                 <notes>
                     Ils sont très misérables.
                 </notes>
             </livre>
-        </auteur>    
-        <auteur nom="Voltaire">
+        </dossier>    
+        <dossier label="Voltaire">
             <livre titre="Zadig" lu="false"/>
             <livre titre="Candide" lu="true">
                 <notes>
                     C'est nul.
                 </notes>
             </livre>
-        </auteur>        
-    </groupe>
-    <groupe theme="anglais">
-        <auteur nom="Beckford">
+        </dossier>        
+    </dossier>
+    <dossier label="anglais">
+        <dossier label="Beckford">
             <livre titre="Vathek" lu="true"/>
-        </auteur>    
-    </groupe>
+        </dossier>    
+    </dossier>
 </root>

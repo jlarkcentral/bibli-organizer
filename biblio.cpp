@@ -2,17 +2,12 @@
 
 Biblio::Biblio()
 {
-    cout << "biblio" << endl;
+    dossierPrincipal = new Dossier("Biblioteque");
 }
 
-void Biblio::addGroupe(Groupe *unGroupe)
+Dossier* Biblio::getDossierPrincipal()
 {
-    groupes.push_back(unGroupe);
-}
-
-void Biblio::delGroupe(int position)
-{
-    groupes.erase(groupes.begin() + position);
+    return dossierPrincipal;
 }
 
 void Biblio::loadXml(string fileName)
@@ -21,42 +16,35 @@ void Biblio::loadXml(string fileName)
     TiXmlDocument doc(charfilename);
     doc.LoadFile();
 
-    cout << "Doc loaded" << endl;
-
     TiXmlElement * element = doc.FirstChildElement()->FirstChildElement();
     if(element){
-        xmlToBiblio(element);
+        xmlToBiblio(element,dossierPrincipal);
     }
 }
 
-void Biblio::xmlToBiblio(TiXmlElement *element)
+void Biblio::xmlToBiblio(TiXmlElement *element, Dossier* unDossier)
 {
-    cout << "xml to biblio" << endl;
-
     while(element){
-        cout << "while element" << endl;
-        Groupe * newGroupe = new Groupe(element->Attribute("theme"));
-        this->addGroupe(newGroupe);
-        TiXmlElement * elementAuteur = element->FirstChildElement();
-        while(elementAuteur){
-            cout << "while elementAuteur" << endl;
-            Auteur * newAuteur = new Auteur(elementAuteur->Attribute("nom"));
-            newGroupe->addAuteur(newAuteur);
-            TiXmlElement * elementLivre = elementAuteur->FirstChildElement();
-            while(elementLivre){
-                cout << "while elementLivre" << endl;
-                Livre * newLivre = new Livre(elementLivre->Attribute("titre"));
-                string newLivreLu = elementLivre->Attribute("lu");
-                newLivre->setLu(newLivreLu == "true");
-                TiXmlElement * elementNotes = elementLivre->FirstChildElement();
+        Dossier * newDossier = new Dossier(element->Attribute("label"));
+        unDossier->addDossier(newDossier);
+        TiXmlElement *elementChild = element->FirstChildElement();
+        if(elementChild->Attribute("titre")){
+            while(elementChild){
+                Livre * newLivre = new Livre(elementChild->Attribute("titre"));
+                newLivre->setLu(element->Attribute("lu") == "true");
+                // ATTENTION !! Auteur pas forcement le label dossier > attribut auteur pour livre dans le XML
+                newLivre->setAuteur(newDossier->getLabel());
+                TiXmlElement *elementNotes = elementChild->FirstChildElement();
                 if(elementNotes){
                     newLivre->setNotes(elementNotes->GetText());
                 }
-                newAuteur->addLivre(newLivre);
+                newDossier->addLivre(newLivre);
 
-                elementLivre = elementLivre->NextSiblingElement();
+                elementChild = elementChild->NextSiblingElement();
             }
-            elementAuteur = elementAuteur->NextSiblingElement();
+        }
+        else if(elementChild->Attribute("label")){
+            xmlToBiblio(elementChild,newDossier);
         }
         element = element->NextSiblingElement();
     }
@@ -64,15 +52,16 @@ void Biblio::xmlToBiblio(TiXmlElement *element)
 
 void Biblio::printBiblio()
 {
-    for(int i = 0 ; i < groupes.size() ; i++){
-        cout << "Groupe : " << groupes.at(i)->getTheme() << endl;
-        for(int j = 0 ; j < groupes.at(i)->getAuteurs().size(); j++){
-            cout << "Auteur : " << groupes.at(i)->getAuteurs().at(j)->getNom() << endl;
-            for(int k = 0 ; k < groupes.at(i)->getAuteurs().at(j)->getLivres().size(); k++){
-                cout << "Livre : " << groupes.at(i)->getAuteurs().at(j)->getLivres().at(k)->getTitre() << endl;
-            }
-            cout << endl;
+    printBiblio(dossierPrincipal);
+}
+
+void Biblio::printBiblio(Dossier* unDossier)
+{
+    for(int i = 0 ; i < unDossier->getDossiers().size() ; i++){
+        cout << "Dossier : " << unDossier->getDossiers().at(i)->getLabel() << endl;
+        printBiblio(unDossier->getDossiers().at(i));
+        for(int j = 0 ; j < unDossier->getDossiers().at(i)->getLivres().size() ; j++){
+            cout << "Livre : " << unDossier->getDossiers().at(i)->getLivres().at(j)->getTitre() << endl;
         }
-        cout << endl;
     }
 }
