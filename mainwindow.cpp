@@ -1,4 +1,5 @@
 #include <QWidget>
+#include <QSplitter>
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Layout principal (grid)
     QWidget * centralwidget = new QWidget(this);
+    QSplitter * splitter = new QSplitter(this);
     setCentralWidget(centralwidget);
     mainLayout = new QGridLayout();
     centralwidget->setLayout(mainLayout);
@@ -35,14 +37,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Arbre de gauche
     tree = new QTreeWidget(this);
-    QLabel * biblioLabel = new QLabel("Bibliothèque",this);
+    QLabel * biblioLabel = new QLabel("",this);
     mainLayout->addWidget(biblioLabel,0,0);
-    mainLayout->addWidget(tree,1,0);
+    //mainLayout->addWidget(tree,1,0);
     tree->header()->hide();
 
     // Menu contextuel arbre
     contextMenu = new QMenu(tree);
-    QAction * addDossierAction = new QAction("Ajouter un dossier",contextMenu);
+    addDossierAction = new QAction("Ajouter un dossier",contextMenu);
     QAction * addLivreAction = new QAction("Ajouter un livre",contextMenu);
     QAction * deleteAction = new QAction("Supprimer",contextMenu);
     contextMenu->addAction(addLivreAction);
@@ -66,12 +68,18 @@ MainWindow::MainWindow(QWidget *parent) :
     Livre * testLivre = new Livre("");
     testLivre->setAuteur("");
     ficheLivre = new FicheLivre(this,testLivre);
-    QLabel * ficheLabel = new QLabel("Fiche Livre",this);
+    QLabel * ficheLabel = new QLabel("",this);
     mainLayout->addWidget(ficheLabel,0,1);
-    mainLayout->addWidget(ficheLivre,1,1);
+    //mainLayout->addWidget(ficheLivre,1,1);
 
     QObject::connect(tree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(changeFicheLivre(QTreeWidgetItem*)));
     //QObject::connect(tree,SIGNAL(),this,SLOT(changeFicheLivre(QTreeWidgetItem*)));
+
+    splitter->addWidget(tree);
+    splitter->addWidget(ficheLivre);
+
+    mainLayout->addWidget(splitter,1,0,1,2);
+
 }
 
 void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
@@ -159,17 +167,17 @@ void MainWindow::contextMenuAction(QAction *action)
                 in->addDossier(newDossier);
                 index.push_back(new ItemIndex(newDossier,newItem));
             }
-            //        else if(text=="Supprimer"){
-            //            if (item->data(1,0) == 0){
-
-            //                deleteItemIndexByLivre(livreFromItem(item));
-            //            }
-            //            else if (item->data(1,0) == 1){
-
-            //            }
-            //        }
-
         }
+        if(item->data(1,0) == 0){
+            addDossierAction->setDisabled(true);
+        }
+        if(text=="Supprimer"){
+            if (item->data(1,0) == 0){
+            }
+            else if (item->data(1,0) == 1){
+            }
+        }
+        addDossierAction->setDisabled(false);
     }
 }
 

@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QStatusBar>
 #include <QMenu>
+#include <QAction>
 
 #include "fichelivre.h"
 #include "dossier.h"
@@ -48,6 +49,7 @@ private:
     FicheLivre * ficheLivre;
     vector<ItemIndex*> index;
     QMenu * contextMenu;
+    QAction * addDossierAction;
     Biblio * biblio;
 };
 

@@ -5,44 +5,63 @@
 FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre) :
     QWidget(parent)
 {
+    QLabel * auteurLabel = new QLabel("Auteur :");
     auteur = new QLineEdit(unLivre->getAuteur().c_str(),this);
+    QHBoxLayout * auteurLayout = new QHBoxLayout();
+    auteurLayout->addWidget(auteurLabel);
+    auteurLayout->addWidget(auteur);
+
+    QLabel * titreLabel = new QLabel("Titre :");
     titre = new QLineEdit(unLivre->getTitre().c_str(),this);
+    QHBoxLayout * titreLayout = new QHBoxLayout();
+    titreLayout->addWidget(titreLabel);
+    titreLayout->addWidget(titre);
+
+    QLabel * genreLabel = new QLabel("Genre :");
     genre = new QLineEdit(unLivre->getGenre().c_str(),this);
+    QHBoxLayout * genreLayout = new QHBoxLayout();
+    genreLayout->addWidget(genreLabel);
+    genreLayout->addWidget(genre);
+
+    QLabel * editionLabel = new QLabel("Édition :");
     edition = new QLineEdit(unLivre->getEdition().c_str(),this);
+    QHBoxLayout * editionLayout = new QHBoxLayout();
+    editionLayout->addWidget(editionLabel);
+    editionLayout->addWidget(edition);
+
+    QLabel * dateEcritureLabel = new QLabel("Date d'écriture :");
     dateEcriture = new QLineEdit(unLivre->getDateEcriture().c_str(),this);
+    QHBoxLayout * dateEcritureLayout = new QHBoxLayout();
+    dateEcritureLayout->addWidget(dateEcritureLabel);
+    dateEcritureLayout->addWidget(dateEcriture);
+
+    QLabel * dateParutionLabel = new QLabel("Date de parution :");
     dateParution = new QLineEdit(unLivre->getDateParution().c_str(),this);
+    QHBoxLayout * dateParutionLayout = new QHBoxLayout();
+    dateParutionLayout->addWidget(dateParutionLabel);
+    dateParutionLayout->addWidget(dateParution);
+
     notes = new QTextEdit(unLivre->getNotes().c_str(),this);
     notesPerso = new QTextEdit();
+
 
     QGridLayout * ficheLayout = new QGridLayout();
 
     // 1ere colonne
-    QLabel * auteurLabel = new QLabel("Auteur :");
-    ficheLayout->addWidget(auteurLabel,0,0);
-    ficheLayout->addWidget(auteur,0,1);
-    QLabel * titreLabel = new QLabel("Titre :");
-    ficheLayout->addWidget(titreLabel,1,0);
-    ficheLayout->addWidget(titre,1,1);
-    QLabel * genreLabel = new QLabel("Genre :");
-    ficheLayout->addWidget(genreLabel,2,0);
-    ficheLayout->addWidget(genre,2,1);
+    ficheLayout->addLayout(auteurLayout,0,0);
+    ficheLayout->addLayout(titreLayout,1,0);
+    ficheLayout->addLayout(genreLayout,2,0);
     // 2eme colonne
-    QLabel * editionLabel = new QLabel("Édition :");
-    ficheLayout->addWidget(editionLabel,0,2);
-    ficheLayout->addWidget(edition,0,3);
-    QLabel * dateEcritureLabel = new QLabel("Date d'écriture :");
-    ficheLayout->addWidget(dateEcritureLabel,1,2);
-    ficheLayout->addWidget(dateEcriture,1,3);
-    QLabel * dateParutionLabel = new QLabel("Date de parution :");
-    ficheLayout->addWidget(dateParutionLabel,2,2);
-    ficheLayout->addWidget(dateParution,2,3);
+    ficheLayout->addLayout(editionLayout,0,1);
+    ficheLayout->addLayout(dateEcritureLayout,1,1);
+    ficheLayout->addLayout(dateParutionLayout,2,1);
     // Notes
     QLabel * notesLabel = new QLabel("Notes pratiques:");
     ficheLayout->addWidget(notesLabel,3,0);
-    ficheLayout->addWidget(notes,4,0,1,4);
+    ficheLayout->addWidget(notes,4,0,1,2);
     QLabel * notesPersoLabel = new QLabel("Notes personelles:");
     ficheLayout->addWidget(notesPersoLabel,5,0);
-    ficheLayout->addWidget(notesPerso,6,0,1,4);
+    ficheLayout->addWidget(notesPerso,6,0,1,2);
     this->setLayout(ficheLayout);
 }
 
