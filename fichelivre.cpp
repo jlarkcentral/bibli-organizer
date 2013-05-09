@@ -71,6 +71,15 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
 
     QObject::connect(titre,SIGNAL(textEdited(QString)),this,SLOT(changeTreeItemTitre(QString)));
 
+//    QObject::connect(titre,SIGNAL(textEdited(QString)),this,SLOT(changeLivreTitre(QString)));
+//    QObject::connect(auteur,SIGNAL(textEdited(QString)),this,SLOT(changeLivreAuteur(QString)));
+//    QObject::connect(genre,SIGNAL(textEdited(QString)),this,SLOT(changeLivreGenre(QString)));
+//    QObject::connect(edition,SIGNAL(textEdited(QString)),this,SLOT(changeLivreEdition(QString)));
+//    QObject::connect(dateEcriture,SIGNAL(textEdited(QString)),this,SLOT(changeLivreDateEcriture(QString)));
+//    QObject::connect(dateParution,SIGNAL(textEdited(QString)),this,SLOT(changeLivreDateParution(QString)));
+//    QObject::connect(notes,SIGNAL(textChanged()),this,SLOT(changeLivreNotes()));
+//    QObject::connect(notesPerso,SIGNAL(textEdited(QString)),this,SLOT(changeLivreNotesPerso()));
+
 }
 
 
