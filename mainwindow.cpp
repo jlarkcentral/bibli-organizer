@@ -45,19 +45,25 @@ MainWindow::MainWindow(QWidget *parent) :
     // Menu contextuel arbre
     contextMenu = new QMenu(tree);
     addDossierAction = new QAction("Ajouter un dossier",contextMenu);
-    QAction * addLivreAction = new QAction("Ajouter un livre",contextMenu);
+    addLivreAction = new QAction("Ajouter un livre",contextMenu);
+    renameAction = new QAction("Renommer",contextMenu);
     QAction * deleteAction = new QAction("Supprimer",contextMenu);
+    contextMenu->addAction(renameAction);
+    contextMenu->addSeparator();
     contextMenu->addAction(addLivreAction);
     contextMenu->addSeparator();
     contextMenu->addAction(addDossierAction);
     contextMenu->addSeparator();
     contextMenu->addAction(deleteAction);
     contextMenu->addSeparator();
+    tree->addAction(renameAction);
     tree->addAction(addLivreAction);
     tree->addAction(addDossierAction);
     tree->addAction(deleteAction);
 
+    QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(contextMenuChange(QTreeWidgetItem*)));
     QObject::connect(contextMenu,SIGNAL(triggered(QAction*)),this,SLOT(contextMenuAction(QAction*)));
+
     tree->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree->setAcceptDrops(true);
     tree->setDragEnabled(true);
@@ -178,6 +184,20 @@ void MainWindow::contextMenuAction(QAction *action)
             }
         }
         addDossierAction->setDisabled(false);
+    }
+}
+
+void MainWindow::contextMenuChange(QTreeWidgetItem *item)
+{
+    if(item->data(1,0) == 1){
+        addDossierAction->setEnabled(true);
+        addLivreAction->setEnabled(true);
+        renameAction->setEnabled(true);
+    }
+    if(item->data(1,0) == 0){
+        addDossierAction->setEnabled(false);
+        addLivreAction->setEnabled(false);
+        renameAction->setEnabled(false);
     }
 }
 

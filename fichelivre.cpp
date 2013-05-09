@@ -55,13 +55,17 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre) :
     ficheLayout->addLayout(editionLayout,0,1);
     ficheLayout->addLayout(dateEcritureLayout,1,1);
     ficheLayout->addLayout(dateParutionLayout,2,1);
+
+    //
+    ficheLayout->addWidget(new QLabel(""),3,0);
+
     // Notes
     QLabel * notesLabel = new QLabel("Notes pratiques:");
-    ficheLayout->addWidget(notesLabel,3,0);
-    ficheLayout->addWidget(notes,4,0,1,2);
+    ficheLayout->addWidget(notesLabel,4,0);
+    ficheLayout->addWidget(notes,5,0,1,2);
     QLabel * notesPersoLabel = new QLabel("Notes personelles:");
-    ficheLayout->addWidget(notesPersoLabel,5,0);
-    ficheLayout->addWidget(notesPerso,6,0,1,2);
+    ficheLayout->addWidget(notesPersoLabel,6,0);
+    ficheLayout->addWidget(notesPerso,7,0,1,2);
     this->setLayout(ficheLayout);
 }
 
