@@ -7,6 +7,7 @@
 #include <QTextDocument>
 #include <QGridLayout>
 #include <QLabel>
+#include <QTreeWidgetItem>
 
 #include "livre.h"
 
@@ -14,7 +15,7 @@ class FicheLivre : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FicheLivre(QWidget *parent = 0, Livre * unLivre = 0);
+    FicheLivre(QWidget *parent = 0, Livre * unLivre = 0);
 
     QString getTitre();
     QString getAuteur();
@@ -33,6 +34,7 @@ public:
     void setDateEcriture(QString uneDate);
     void setDateParution(QString uneDate);
     void setEditable(bool b);
+    void setItemCourant(QTreeWidgetItem * item);
 
 private:
     QLineEdit * titre;
@@ -44,10 +46,12 @@ private:
     QTextEdit * notes;
     QTextEdit * notesPerso;
     bool editable;
+    QTreeWidgetItem * itemCourant;
     
 signals:
     
 public slots:
+    void changeTreeItemTitre(QString newTitre);
     
 };
 

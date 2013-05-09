@@ -27,7 +27,7 @@ public:
 
     void biblioToTree(Dossier *dossier, QTreeWidgetItem *item);
     QTreeWidget* getTree();
-    void setLivreFicheLivre(Livre * unLivre);
+    void setLivreFicheLivre(Livre * unLivre, QTreeWidgetItem *item);
     void setBiblio(Biblio * uneBiblio);
     Biblio* getBiblio();
     Livre* livreFromItem(QTreeWidgetItem* item);

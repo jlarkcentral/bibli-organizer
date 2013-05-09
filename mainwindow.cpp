@@ -23,9 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(centralwidget);
     mainLayout = new QGridLayout();
     centralwidget->setLayout(mainLayout);
-
     // Entete fenetre
     setWindowTitle("BiblioApp");
+
+    QLabel * title = new QLabel("");
+    title->setAlignment(Qt::AlignCenter);
+    title->setStyleSheet("font-size : 16px");
+    mainLayout->addWidget(title,0,0,1,2);
 
     //Barre des menus
     QMenuBar * bar = new QMenuBar(this);
@@ -37,9 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Arbre de gauche
     tree = new QTreeWidget(this);
-    QLabel * biblioLabel = new QLabel("",this);
-    mainLayout->addWidget(biblioLabel,0,0);
-    //mainLayout->addWidget(tree,1,0);
     tree->header()->hide();
 
     // Menu contextuel arbre
@@ -74,17 +75,13 @@ MainWindow::MainWindow(QWidget *parent) :
     Livre * testLivre = new Livre("");
     testLivre->setAuteur("");
     ficheLivre = new FicheLivre(this,testLivre);
-    QLabel * ficheLabel = new QLabel("",this);
-    mainLayout->addWidget(ficheLabel,0,1);
-    //mainLayout->addWidget(ficheLivre,1,1);
 
     QObject::connect(tree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(changeFicheLivre(QTreeWidgetItem*)));
-    //QObject::connect(tree,SIGNAL(),this,SLOT(changeFicheLivre(QTreeWidgetItem*)));
 
     splitter->addWidget(tree);
     splitter->addWidget(ficheLivre);
 
-    mainLayout->addWidget(splitter,1,0,1,2);
+    mainLayout->addWidget(splitter,1,0);
 
 }
 
@@ -125,18 +122,19 @@ Biblio* MainWindow::getBiblio()
     return biblio;
 }
 
-void MainWindow::setLivreFicheLivre(Livre *unLivre)
+void MainWindow::setLivreFicheLivre(Livre *unLivre,QTreeWidgetItem * item)
 {
     ficheLivre->setTitre(QString(unLivre->getTitre().c_str()));
     ficheLivre->setAuteur(QString(unLivre->getAuteur().c_str()));
     ficheLivre->setNotes(QString(unLivre->getNotes().c_str()));
+    ficheLivre->setItemCourant(item);
 }
 
 void MainWindow::changeFicheLivre(QTreeWidgetItem * item)
 {
     if (item->data(1,0) == 0){
         Livre * livreSelect = livreFromItem(item);
-        setLivreFicheLivre(livreSelect);
+        setLivreFicheLivre(livreSelect,item);
     }
 }
 
@@ -158,7 +156,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 in->addLivre(newLivre);
                 index.push_back(new ItemIndex(newLivre,newItem));
                 // update fiche
-                setLivreFicheLivre(newLivre);
+                setLivreFicheLivre(newLivre,0);
                 ficheLivre->setEditable(true);
             }
             else if(text=="Ajouter un dossier"){

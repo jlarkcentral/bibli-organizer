@@ -2,9 +2,10 @@
 
 #include <iostream>
 
-FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre) :
+FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
     QWidget(parent)
 {
+    // les champs
     QLabel * auteurLabel = new QLabel("Auteur :");
     auteur = new QLineEdit(unLivre->getAuteur().c_str(),this);
     QHBoxLayout * auteurLayout = new QHBoxLayout();
@@ -67,6 +68,9 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre) :
     ficheLayout->addWidget(notesPersoLabel,6,0);
     ficheLayout->addWidget(notesPerso,7,0,1,2);
     this->setLayout(ficheLayout);
+
+    QObject::connect(titre,SIGNAL(textEdited(QString)),this,SLOT(changeTreeItemTitre(QString)));
+
 }
 
 
@@ -92,6 +96,11 @@ void FicheLivre::setEditable(bool b)
     titre->setReadOnly(!b);
     notes->setReadOnly(!b);
     notesPerso->setReadOnly(!b);
+}
+
+void FicheLivre::setItemCourant(QTreeWidgetItem *item)
+{
+    itemCourant = item;
 }
 
 QString FicheLivre::getAuteur()
@@ -132,4 +141,11 @@ QString FicheLivre::getDateParution()
 bool FicheLivre::isEditable()
 {
     return editable;
+}
+
+void FicheLivre::changeTreeItemTitre(QString newTitre)
+{
+    if(itemCourant && itemCourant->data(1,0) == 0){
+        itemCourant->setText(0,newTitre);
+    }
 }
