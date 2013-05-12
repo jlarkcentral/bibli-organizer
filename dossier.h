@@ -1,7 +1,6 @@
 #ifndef DOSSIER_H
 #define DOSSIER_H
 
-#include <iostream>
 #include <vector>
 
 #include "livre.h"
@@ -17,9 +16,9 @@ public:
     vector<Livre*> getLivres();
     void setLabel(string unLabel);
     void addDossier(Dossier * unDossier);
-    void delDossier(int position);
+    void delDossier(Dossier * unDossier);
     void addLivre(Livre * unLivre);
-    void delLivre(int position);
+    void delLivre(Livre * unLivre);
 
 private:
     string label;

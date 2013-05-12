@@ -17,9 +17,11 @@ public:
     string getDateParution();
     string getNotes();
     string getNotesPerso();
-    void setLu(bool estLu);
+    string getLu();
+    void setLu(string estLu);
     void setNotes(string desNotes);
     void setNotesPerso(string desNotesPerso);
+    void setTitre(string unTitre);
     void setAuteur(string unAuteur);
     void setGenre(string unGenre);
     void setEdition(string uneEdition);
@@ -30,15 +32,13 @@ public:
 private:
     string titre;
     string auteur;
-    bool lu;
+    string lu;
     string notes;
     string notesPerso;
     string edition;
     string dateParution;
     string dateEcriture;
     string genre;
-
-    // edition , date de parution , date d ecriture , genre
 };
 
 #endif // LIVRE_H

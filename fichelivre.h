@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QTreeWidgetItem>
+#include <QCheckBox>
 
 #include "livre.h"
 
@@ -24,20 +25,25 @@ public:
     QString getEdition();
     QString getDateEcriture();
     QString getDateParution();
+    bool getCheckLu();
     bool isEditable();
-
+    void setCheckLu(bool lu);
+    void setLivre(Livre * unLivre);
     void setTitre(QString unTitre);
     void setAuteur(QString unAuteur);
     void setNotes(QString desNotes);
+    void setNotesPerso(QString desNotes);
     void setGenre(QString unGenre);
     void setEdition(QString uneEdition);
     void setDateEcriture(QString uneDate);
     void setDateParution(QString uneDate);
-    void setEditable(bool b);
     void setItemCourant(QTreeWidgetItem * item);
+    void focusOnTitre();
+
+    QLineEdit * titre;
 
 private:
-    QLineEdit * titre;
+    //QLineEdit * titre;
     QLineEdit * auteur;
     QLineEdit * genre;
     QLineEdit * edition;
@@ -47,12 +53,23 @@ private:
     QTextEdit * notesPerso;
     bool editable;
     QTreeWidgetItem * itemCourant;
+    Livre * leLivre;
+    QCheckBox * checkLu;
     
 signals:
     
 public slots:
     void changeTreeItemTitre(QString newTitre);
-    
+    void setEditable(bool b);
+    void changeLivreTitre(QString qs);
+    void changeLivreAuteur(QString qs);
+    void changeLivreGenre(QString qs);
+    void changeLivreEdition(QString qs);
+    void changeLivreDateEcriture(QString qs);
+    void changeLivreDateParution(QString qs);
+    void changeLivreNotes();
+    void changeLivreNotesPerso();
+    void changeLivreLu(bool lu);
 };
 
 #endif // FICHELIVRE_H

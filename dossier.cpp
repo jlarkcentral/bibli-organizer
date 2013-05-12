@@ -30,9 +30,16 @@ void Dossier::addDossier(Dossier *unDossier)
     dossiers.push_back(unDossier);
 }
 
-void Dossier::delDossier(int position)
+void Dossier::delDossier(Dossier * unDossier)
 {
-    dossiers.erase(dossiers.begin() + position);
+    for( vector<Dossier*>::iterator iter = dossiers.begin(); iter != dossiers.end(); ++iter )
+    {
+        if( *iter == unDossier )
+        {
+            dossiers.erase( iter );
+            break;
+        }
+    }
 }
 
 void Dossier::addLivre(Livre *unLivre)
@@ -40,7 +47,14 @@ void Dossier::addLivre(Livre *unLivre)
     livres.push_back(unLivre);
 }
 
-void Dossier::delLivre(int position)
+void Dossier::delLivre(Livre *unLivre)
 {
-    livres.erase(livres.begin() + position);
+    for( vector<Livre*>::iterator iter = livres.begin(); iter != livres.end(); ++iter )
+    {
+        if( *iter == unLivre )
+        {
+            livres.erase( iter );
+            break;
+        }
+    }
 }

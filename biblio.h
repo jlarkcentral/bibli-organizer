@@ -21,6 +21,9 @@ public:
     void xmlToBiblio(TiXmlElement *element, Dossier *unDossier);
     void printBiblio(Dossier *unDossier);
     void printBiblio();
+    void biblioToXml(Dossier *dossierCourant, TiXmlElement *elementCourant);
+    void saveBiblio();
+
 private:
     Dossier * dossierPrincipal;
 };

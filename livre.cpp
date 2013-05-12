@@ -3,10 +3,9 @@
 Livre::Livre(string unTitre)
 {
     titre = unTitre;
-    lu = false;
 }
 
-void Livre::setLu(bool estLu)
+void Livre::setLu(string estLu)
 {
     lu = estLu;
 }
@@ -21,9 +20,39 @@ void Livre::setNotesPerso(string desNotesPerso)
     notesPerso = desNotesPerso;
 }
 
+void Livre::setTitre(string unTitre)
+{
+    titre = unTitre;
+}
+
 void Livre::setAuteur(string unAuteur)
 {
     auteur = unAuteur;
+}
+
+void Livre::setGenre(string unGenre)
+{
+    genre = unGenre;
+}
+
+void Livre::setEdition(string uneEdition)
+{
+    edition = uneEdition;
+}
+
+void Livre::setDateEcriture(string uneDate)
+{
+    dateEcriture = uneDate;
+}
+
+void Livre::setDateParution(string uneDate)
+{
+    dateParution = uneDate;
+}
+
+string Livre::getLu()
+{
+    return lu;
 }
 
 string Livre::getTitre()

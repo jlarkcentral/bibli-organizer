@@ -1,25 +1,31 @@
-<?xml version="1.0" encoding="iso-8859-1" ?>
-<root>
-    <dossier label="francais">
-        <dossier label="Victor Hugo">
-            <livre titre="Les Misérables" lu="true">
-                <notes>
-                    Ils sont très misérables.
-                </notes>
-            </livre>
-        </dossier>    
-        <dossier label="Voltaire">
-            <livre titre="Zadig" lu="false"/>
-            <livre titre="Candide" lu="true">
-                <notes>
-                    C'est nul.
-                </notes>
-            </livre>
-        </dossier>        
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<racine>
+    <dossier label="Bibliotheque">
+        <dossier label="anglais">
+            <dossier label="Beckford">
+                <livre titre="Vathek" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
+        <dossier label="francais">
+            <dossier label="Victor Hugo">
+                <livre titre="Les Misérables" auteur="rrrrr" genre="" edition="" dateEcriture="1789" dateParution="" lu="y">
+                    <notes>dsdfsdfsdfsdfsdfs</notes>
+                    <notesPerso>fdsfdsfsdfsdffddsfsdfs</notesPerso>
+                </livre>
+            </dossier>
+            <dossier label="Voltaire">
+                <livre titre="Candide" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="n">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+                <livre titre="Zadig 2 le retour" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="y">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
     </dossier>
-    <dossier label="anglais">
-        <dossier label="Beckford">
-            <livre titre="Vathek" lu="true"/>
-        </dossier>    
-    </dossier>
-</root>
+</racine>
