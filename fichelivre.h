@@ -28,6 +28,7 @@ public:
     bool getCheckLu();
     bool isEditable();
     void setCheckLu(bool lu);
+    void setCheckALire(bool lire);
     void setLivre(Livre * unLivre);
     void setTitre(QString unTitre);
     void setAuteur(QString unAuteur);
@@ -55,11 +56,15 @@ private:
     QTreeWidgetItem * itemCourant;
     Livre * leLivre;
     QCheckBox * checkLu;
+    QCheckBox * aLire;
     void emitSetLu();
     void emitSetNonLu();
+    void emitSetALire();
+    void emitSetNonALire();
     
 signals:
-    void setlu(bool b);
+    void setLu(bool b);
+    void setALire(QTreeWidgetItem* item,bool b);
     
 public slots:
     void changeTreeItemTitre(QString newTitre);
@@ -73,6 +78,7 @@ public slots:
     void changeLivreNotes();
     void changeLivreNotesPerso();
     void changeLivreLu(bool lu);
+    void changeLivreALire(bool c);
 };
 
 #endif // FICHELIVRE_H

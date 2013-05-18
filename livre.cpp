@@ -10,6 +10,11 @@ void Livre::setLu(string estLu)
     lu = estLu;
 }
 
+void Livre::setALire(string lire)
+{
+    aLire = lire;
+}
+
 void Livre::setNotes(string desNotes)
 {
     notes = desNotes;
@@ -53,6 +58,11 @@ void Livre::setDateParution(string uneDate)
 string Livre::getLu()
 {
     return lu;
+}
+
+string Livre::getALire()
+{
+    return aLire;
 }
 
 string Livre::getTitre()

@@ -2,21 +2,26 @@
 #define PILEALIRE_H
 
 #include <QWidget>
-#include <QListWidget>
+#include <QTreeWidget>
 #include <QGridLayout>
+#include <QLabel>
+#include <QHeaderView>
 
 class PileALire : public QWidget
 {
     Q_OBJECT
 public:
     explicit PileALire(QWidget *parent = 0);
+
+    QTreeWidget * palList;
     
 signals:
     
 public slots:
 
+
 private:
-    QListWidget * palList;
+
 };
 
 #endif // PILEALIRE_H

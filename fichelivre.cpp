@@ -46,6 +46,7 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
     notes = new QTextEdit();
     notesPerso = new QTextEdit();
     checkLu = new QCheckBox("J'ai lu");
+    aLire = new QCheckBox("À lire");
 
     QGridLayout * ficheLayout = new QGridLayout();
 
@@ -58,10 +59,18 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
     ficheLayout->addLayout(dateEcritureLayout,1,1);
     ficheLayout->addLayout(dateParutionLayout,2,1);
 
+    QHBoxLayout * checkLayout = new QHBoxLayout();
     // J ai lu
     checkLu->setFocusPolicy(Qt::NoFocus);
     checkLu->setLayoutDirection(Qt::LayoutDirection(Qt::RightToLeft));
-    ficheLayout->addWidget(checkLu,6,1);
+    checkLayout->addWidget(checkLu);
+
+    // J ai lu
+    aLire->setFocusPolicy(Qt::NoFocus);
+    aLire->setLayoutDirection(Qt::LayoutDirection(Qt::RightToLeft));
+    checkLayout->addWidget(aLire);
+
+    ficheLayout->addLayout(checkLayout,6,1);
 
     // Notes
     QLabel * notesLabel = new QLabel("Notes pratiques:");
@@ -83,9 +92,9 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
     QObject::connect(notes,SIGNAL(textChanged()),this,SLOT(changeLivreNotes()));
     QObject::connect(notesPerso,SIGNAL(textChanged()),this,SLOT(changeLivreNotesPerso()));
     QObject::connect(checkLu,SIGNAL(toggled(bool)),this,SLOT(changeLivreLu(bool)));
+    QObject::connect(aLire,SIGNAL(toggled(bool)),this,SLOT(changeLivreALire(bool)));
 
 }
-
 
 void FicheLivre::setLivre(Livre *unLivre)
 {
@@ -154,6 +163,11 @@ void FicheLivre::setItemCourant(QTreeWidgetItem *item)
 void FicheLivre::setCheckLu(bool lu)
 {
     checkLu->setChecked(lu);
+}
+
+void FicheLivre::setCheckALire(bool lire)
+{
+    aLire->setChecked(lire);
 }
 
 bool FicheLivre::getCheckLu()
@@ -263,6 +277,16 @@ void FicheLivre::changeLivreLu(bool lu)
     else emitSetNonLu();
 }
 
+void FicheLivre::changeLivreALire(bool lu)
+{
+    string aLire = (lu)? "y" : "n";
+    leLivre->setALire(aLire);
+    if(lu){
+        emitSetALire();
+    }
+    else emitSetNonALire();
+}
+
 void FicheLivre::focusOnTitre()
 {
     titre->setFocus();
@@ -270,10 +294,20 @@ void FicheLivre::focusOnTitre()
 
 void FicheLivre::emitSetLu()
 {
-    emit setlu(true);
+    emit setLu(true);
 }
 
 void FicheLivre::emitSetNonLu()
 {
-    emit setlu(false);
+    emit setLu(false);
+}
+
+void FicheLivre::emitSetALire()
+{
+    emit setALire(itemCourant, true);
+}
+
+void FicheLivre::emitSetNonALire()
+{
+    emit setALire(itemCourant, false);
 }

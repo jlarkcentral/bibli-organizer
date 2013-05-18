@@ -5,6 +5,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <iostream>
+#include <algorithm>
 
 #include "dossier.h"
 
@@ -23,10 +24,11 @@ public:
     void printBiblio();
     void biblioToXml(Dossier *dossierCourant, TiXmlElement *elementCourant);
     void saveBiblio();
+//    void addLivreALire(Livre* l);
 
 private:
     Dossier * dossierPrincipal;
-    vector<Livre*> livresALire;
+//    vector<Livre*> livresALire;
 };
 
 #endif // BIBLIO_H

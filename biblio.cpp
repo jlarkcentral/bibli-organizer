@@ -38,6 +38,7 @@ void Biblio::xmlToBiblio(TiXmlElement *element, Dossier* unDossier)
             newLivre->setDateEcriture(element->Attribute("dateEcriture"));
             newLivre->setDateParution(element->Attribute("dateParution"));
             newLivre->setLu(element->Attribute("lu"));
+            newLivre->setALire(element->Attribute("alire"));
             if(element->FirstChildElement()){
                 if(element->FirstChildElement()->GetText()){
                     newLivre->setNotes(element->FirstChildElement()->GetText());
@@ -89,6 +90,7 @@ void Biblio::biblioToXml(Dossier * dossierCourant,TiXmlElement * elementCourant)
         newElement->SetAttribute("dateEcriture",l->getDateEcriture().c_str());
         newElement->SetAttribute("dateParution",l->getDateParution().c_str());
         newElement->SetAttribute("lu",l->getLu().c_str());
+        newElement->SetAttribute("alire",l->getALire().c_str());
 
         TiXmlElement * notesElement = new TiXmlElement("notes");
         newElement->LinkEndChild(notesElement);
@@ -119,3 +121,12 @@ void Biblio::saveBiblio()
 
     doc.SaveFile();
 }
+
+//void Biblio::addLivreALire(Livre *l)
+//{
+//    if(find(livresALire.begin(), livresALire.end(), l) != livresALire.end()) {
+//    }
+//    else{
+//        livresALire.push_back(l);
+//    }
+//}

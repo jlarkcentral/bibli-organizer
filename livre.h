@@ -18,7 +18,9 @@ public:
     string getNotes();
     string getNotesPerso();
     string getLu();
+    string getALire();
     void setLu(string estLu);
+    void setALire(string lire);
     void setNotes(string desNotes);
     void setNotesPerso(string desNotesPerso);
     void setTitre(string unTitre);
@@ -33,6 +35,7 @@ private:
     string titre;
     string auteur;
     string lu;
+    string aLire;
     string notes;
     string notesPerso;
     string edition;

@@ -63,6 +63,7 @@ public slots:
     void secureDelete(bool secure);
     void updateTreeOrder(QTreeWidgetItem *item, int col);
     void updateNbLivresLus(bool b);
+    void changePAL(QTreeWidgetItem *item, bool aLire);
     
 private:
     QGridLayout * mainLayout;

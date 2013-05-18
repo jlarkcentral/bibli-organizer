@@ -69,9 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
     title->setStyleSheet("font-size : 16px");
     mainLayout->addWidget(title,0,0);
 
-//    ficheLabel = new QLabel("");
-//    ficheLabel->setStyleSheet("font-size : 18px");
-//    mainLayout->addWidget(ficheLabel,0,3);
+    //    ficheLabel = new QLabel("");
+    //    ficheLabel->setStyleSheet("font-size : 18px");
+    //    mainLayout->addWidget(ficheLabel,0,3);
 
     // bouton edition
     buttonEdit = new QPushButton("Mode lecture");
@@ -140,7 +140,30 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),this,SLOT(buttonEditChange(bool)));
     QObject::connect(ficheLivre->titre,SIGNAL(textChanged(QString)),this,SLOT(setFicheLabelText(QString)));
     //    QObject::connect(ficheLivre,SIGNAL(setlu(bool)),this,SLOT(updateNbLivresLus(bool)));
+    QObject::connect(ficheLivre,SIGNAL(setALire(QTreeWidgetItem*,bool)),this,SLOT(changePAL(QTreeWidgetItem*,bool)));
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
+}
+
+void MainWindow::changePAL(QTreeWidgetItem *item, bool aLire)
+{
+    Livre * l = livreMap.at(item);
+    if(aLire){
+        if(l->getALire() != "y"){
+            QTreeWidgetItem * listItem = new QTreeWidgetItem();
+            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            listItem->setText(0,QString(l->getTitre().c_str()));
+            listItem->setText(1,QString(l->getAuteur().c_str()));
+            listItem->setText(2,QString(l->getDateEcriture().c_str()));
+            pilealire->palList->addTopLevelItem(listItem);
+        }
+    }
+    else{
+        if(l->getLu() == "y"){
+//            listItem = item du livre -> delete Item
+        }
+    }
 }
 
 void MainWindow::updateTreeOrder(QTreeWidgetItem * item, int col)
@@ -220,6 +243,16 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         if(livreCourant->getLu() == "y"){
             nbLivresLus++;
         }
+        if(livreCourant->getALire() == "y"){
+            QTreeWidgetItem * listItem = new QTreeWidgetItem();
+            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            listItem->setText(0,QString(livreCourant->getTitre().c_str()));
+            listItem->setText(1,QString((livreCourant->getAuteur()).c_str()));
+            listItem->setText(2,QString(livreCourant->getDateEcriture().c_str()));
+            pilealire->palList->addTopLevelItem(listItem);
+        }
     }
     QTreeWidgetItem * top = tree->topLevelItem(0);
     top->setExpanded(true);
@@ -228,7 +261,7 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
     top->setBackgroundColor(0,QColor(230,230,230));
     tree->sortItems(0,Qt::AscendingOrder);
 
-//    updateStatusBar();
+    //    updateStatusBar();
 }
 
 void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCourant)
@@ -275,16 +308,20 @@ void MainWindow::setLivreFicheLivre(Livre *unLivre,QTreeWidgetItem * item)
     ficheLivre->setNotes(QString(unLivre->getNotes().c_str()));
     ficheLivre->setNotesPerso(QString(unLivre->getNotesPerso().c_str()));
     ficheLivre->setCheckLu(unLivre->getLu() == "y");
+    ficheLivre->setCheckALire(unLivre->getALire() == "y");
+    //    ficheLivre = new FicheLivre(this,unLivre,item);
 }
 
 void MainWindow::doubleClickItemSlot(QTreeWidgetItem * item)
 {
     if (item->data(1,0) == 0){
         if(!ficheLivre->isVisible()){
-            pilealire->close();
-//            buttonEdit->setEnabled(true);
-            buttonEdit->setVisible(true);
-            ficheLivre->show();
+            //            pilealire->close();
+            pilealire->setVisible(false);
+            buttonEdit->setEnabled(true);
+            //            buttonEdit->setVisible(true);
+            //            ficheLivre->show();
+            ficheLivre->setVisible(true);
         }
         if(ficheLivre->isEnabled() == false){
             ficheLivre->setEnabled(true);
@@ -335,7 +372,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 buttonEdit->setEnabled(true);
                 buttonEdit->setChecked(true);
                 buttonEditChange(true);
-//                updateStatusBar();
+                //                updateStatusBar();
             }
             else if(text=="Ajouter un dossier"){
                 // update arbre
@@ -488,7 +525,7 @@ void MainWindow::deleteItemCourant()
             Livre * l = livreMap.at(itemCourant);
             if(l->getLu() == "y"){
                 nbLivresLus--;
-//                updateStatusBar();
+                //                updateStatusBar();
             }
             dossierCourant->delLivre(l);
             livreMap.erase(itemCourant);
@@ -558,11 +595,15 @@ void MainWindow::menuAction(QAction *action)
         close();
     }
     else if(text == "Afficher la PAL"){
-        ficheLivre->close();
-//        buttonEdit->setDisabled(true);
-        buttonEdit->setVisible(false);
+        //        ficheLivre->close();
+        QSize s = ficheLivre->size();
+        ficheLivre->setVisible(false);
+        buttonEdit->setDisabled(true);
+        //        buttonEdit->setVisible(false);
         if(!pilealire->isVisible()){
-            pilealire->show();
+            //            pilealire->show();
+            pilealire->setFixedSize(s);
+            pilealire->setVisible(true);
         }
         splitter->addWidget(pilealire);
     }

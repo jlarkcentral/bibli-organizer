@@ -3,41 +3,43 @@
     <dossier label="Bibliotheque">
         <dossier label="anglais">
             <dossier label="Beckford">
-                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="">
+                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n" alire="y">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>
-                <livre titre="Vathek" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n">
+                <livre titre="Vathek" auteur="WB" genre="" edition="voila" dateEcriture="120" dateParution="" lu="y" alire="n">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>
             </dossier>
-            <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n">
-                <notes></notes>
-                <notesPerso></notesPerso>
-            </livre>
         </dossier>
         <dossier label="francais">
             <dossier label="Victor Hugo">
-                <livre titre="Les Misérables" auteur="rrrrr" genre="" edition="" dateEcriture="1789" dateParution="" lu="y">
+                <livre titre="Les Misérables" auteur="rrrrr" genre="youpla" edition="" dateEcriture="1789" dateParution="" lu="y" alire="n">
                     <notes>dsdfsdfsdfsdfsdfs</notes>
                     <notesPerso>fdsfdsfsdfsdffddsfsdfs</notesPerso>
                 </livre>
-                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n">
+                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n" alire="y">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>
             </dossier>
             <dossier label="Voltaire">
-                <livre titre="Candide" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="y">
+                <livre titre="Candide" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="n" alire="y">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>
-                <livre titre="Zadig 2 le retour" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="y">
+                <livre titre="Zadig 2 le retour" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="y" alire="n">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>
             </dossier>
+        </dossier>
+        <dossier label="Nouveau dossier">
+            <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="" alire="y">
+                <notes></notes>
+                <notesPerso></notesPerso>
+            </livre>
         </dossier>
     </dossier>
 </racine>
