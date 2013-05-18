@@ -118,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(securite,SIGNAL(toggled(bool)),this,SLOT(secureDelete(bool)));
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(contextMenuChange(QTreeWidgetItem*)));
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(buttonEditEnable(QTreeWidgetItem*)));
-    QObject::connect(tree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(changeFicheLivre(QTreeWidgetItem*)));
+    QObject::connect(tree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(doubleClickItemSlot(QTreeWidgetItem*)));
     QObject::connect(contextMenu,SIGNAL(triggered(QAction*)),this,SLOT(contextMenuAction(QAction*)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),ficheLivre,SLOT(setEditable(bool)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),this,SLOT(buttonEditChange(bool)));
@@ -133,7 +133,9 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         Dossier * dossierCourant = dossier->getDossiers().at(i);
         newItem->setText(0,QString(dossierCourant->getLabel().c_str()));
         newItem->setData(1,0,1);
-        index.push_back(new ItemIndex(dossierCourant,newItem));
+        newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
+//        index.push_back(new ItemIndex(dossierCourant,newItem));
+        dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,dossierCourant));
         item->addChild(newItem);
         biblioToTree((dossier->getDossiers().at(i)),newItem);
     }
@@ -144,7 +146,8 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         newItem->setData(1,0,0);
         newItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
         newItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled);
-        index.push_back(new ItemIndex(livreCourant,newItem));
+//        index.push_back(new ItemIndex(livreCourant,newItem));
+        livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,livreCourant));
         item->addChild(newItem);
     }
     QTreeWidgetItem * top = tree->topLevelItem(0);
@@ -164,7 +167,8 @@ void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCour
             treeToBiblio(itemCourant->child(i),d);
         }
         else if(itemCourant->child(i)->data(1,0) == 0){
-            Livre * l = livreFromItem(itemCourant->child(i));
+//            Livre * l = livreFromItem(itemCourant->child(i));
+            Livre * l = livreMap.at(itemCourant->child(i));
             dossierCourant->addLivre(l);
         }
     }
@@ -200,13 +204,14 @@ void MainWindow::setLivreFicheLivre(Livre *unLivre,QTreeWidgetItem * item)
     ficheLivre->setCheckLu(unLivre->getLu() == "y");
 }
 
-void MainWindow::changeFicheLivre(QTreeWidgetItem * item)
+void MainWindow::doubleClickItemSlot(QTreeWidgetItem * item)
 {
     if (item->data(1,0) == 0){
         if(ficheLivre->isEnabled() == false){
             ficheLivre->setEnabled(true);
         }
-        Livre * livreSelect = livreFromItem(item);
+//        Livre * livreSelect = livreFromItem(item);
+        Livre * livreSelect = livreMap.at(item);
         setLivreFicheLivre(livreSelect,item);
         ficheLabel->setText("Fiche du livre \"" + QString(livreSelect->getTitre().c_str()) + "\"");
     }
@@ -224,6 +229,7 @@ void MainWindow::contextMenuAction(QAction *action)
             if(text=="Ajouter un livre"){
                 ficheLivre->setEnabled(true);
                 // update arbre
+                item->setExpanded(true);
                 QTreeWidgetItem * newItem = new QTreeWidgetItem();
                 newItem->setText(0,"Nouveau livre");
                 newItem->setData(1,0,0);
@@ -231,10 +237,12 @@ void MainWindow::contextMenuAction(QAction *action)
                 newItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled);
                 item->addChild(newItem);
                 // update modele
-                Livre * newLivre = new Livre("");
-                Dossier * in = dossierFromItem(item);
+                Livre * newLivre = new Livre("Nouveau Livre");
+//                Dossier * in = dossierFromItem(item);
+                Dossier * in = dossierMap.at(item);
                 in->addLivre(newLivre);
-                index.push_back(new ItemIndex(newLivre,newItem));
+//                index.push_back(new ItemIndex(newLivre,newItem));
+                livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,newLivre));
                 // update fiche
                 setLivreFicheLivre(newLivre,0);
                 ficheLivre->setEditable(true);
@@ -250,16 +258,23 @@ void MainWindow::contextMenuAction(QAction *action)
             }
             else if(text=="Ajouter un dossier"){
                 // update arbre
+                item->setExpanded(true);
                 QTreeWidgetItem * newItem = new QTreeWidgetItem();
                 newItem->setText(0,"Nouveau dossier");
                 newItem->setData(1,0,1);
+                newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
                 item->addChild(newItem);
                 // update modele
-                Dossier * newDossier = new Dossier("Sans Titre");
-                Dossier * in = dossierFromItem(item);
+                Dossier * newDossier = new Dossier("Nouveau Dossier");
+//                Dossier * in = dossierFromItem(item);
+                Dossier * in = dossierMap.at(item);
                 in->addDossier(newDossier);
-                index.push_back(new ItemIndex(newDossier,newItem));
+//                index.push_back(new ItemIndex(newDossier,newItem));
+                dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,newDossier));
                 tree->sortItems(0,Qt::AscendingOrder);
+            }
+            else if(text=="Renommer"){
+                tree->editItem(item,0);
             }
         }
         if(item->data(1,0) == 0){
@@ -331,49 +346,49 @@ void MainWindow::buttonEditEnable(QTreeWidgetItem *item)
     }
 }
 
-Livre* MainWindow::livreFromItem(QTreeWidgetItem *item)
-{
-    for(uint i = 0 ; i < index.size() ; i++){
-        ItemIndex * cii = index.at(i);
-        if(cii->getTreeItem() == item){
-            return cii->getLivre();
-        }
-    }
-    return 0;
-}
+//Livre* MainWindow::livreFromItem(QTreeWidgetItem *item)
+//{
+//    for(uint i = 0 ; i < index.size() ; i++){
+//        ItemIndex * cii = index.at(i);
+//        if(cii->getTreeItem() == item){
+//            return cii->getLivre();
+//        }
+//    }
+//    return 0;
+//}
 
-Dossier* MainWindow::dossierFromItem(QTreeWidgetItem *item)
-{
-    for(uint i = 0 ; i < index.size() ; i++){
-        ItemIndex * cii = index.at(i);
-        if(cii->getTreeItem() == item){
-            return cii->getDossier();
-        }
-    }
-    return 0;
-}
+//Dossier* MainWindow::dossierFromItem(QTreeWidgetItem *item)
+//{
+//    for(uint i = 0 ; i < index.size() ; i++){
+//        ItemIndex * cii = index.at(i);
+//        if(cii->getTreeItem() == item){
+//            return cii->getDossier();
+//        }
+//    }
+//    return 0;
+//}
 
-QTreeWidgetItem* MainWindow::itemFromDossier(Dossier *unDossier)
-{
-    for(uint i = 0 ; i < index.size() ; i++){
-        ItemIndex * cii = index.at(i);
-        if(cii->getDossier() == unDossier){
-            return cii->getTreeItem();
-        }
-    }
-    return 0;
-}
+//QTreeWidgetItem* MainWindow::itemFromDossier(Dossier *unDossier)
+//{
+//    for(uint i = 0 ; i < index.size() ; i++){
+//        ItemIndex * cii = index.at(i);
+//        if(cii->getDossier() == unDossier){
+//            return cii->getTreeItem();
+//        }
+//    }
+//    return 0;
+//}
 
-QTreeWidgetItem* MainWindow::itemFromLivre(Livre *unLivre)
-{
-    for(uint i = 0 ; i < index.size() ; i++){
-        ItemIndex * cii = index.at(i);
-        if(cii->getLivre() == unLivre){
-            return cii->getTreeItem();
-        }
-    }
-    return 0;
-}
+//QTreeWidgetItem* MainWindow::itemFromLivre(Livre *unLivre)
+//{
+//    for(uint i = 0 ; i < index.size() ; i++){
+//        ItemIndex * cii = index.at(i);
+//        if(cii->getLivre() == unLivre){
+//            return cii->getTreeItem();
+//        }
+//    }
+//    return 0;
+//}
 
 void MainWindow::updateStatusBar()
 {
@@ -383,13 +398,13 @@ void MainWindow::updateStatusBar()
 void MainWindow::deleteItemCourant()
 {
     if(itemCourant){
-        Dossier * dossierCourant = dossierFromItem(itemCourant->parent());
+        Dossier * dossierCourant = dossierMap.at(itemCourant->parent());
         if(itemCourant->data(1,0) == 0){
-            Livre * l = livreFromItem(itemCourant);
+            Livre * l = livreMap.at(itemCourant);
             dossierCourant->delLivre(l);
         }
         else if(itemCourant->data(1,0) == 1){
-            Dossier * d = dossierFromItem(itemCourant);
+            Dossier * d = dossierMap.at(itemCourant);
             dossierCourant->delDossier(d);
         }
         delete(itemCourant);

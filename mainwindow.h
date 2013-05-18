@@ -34,10 +34,10 @@ public:
     void setLivreFicheLivre(Livre * unLivre, QTreeWidgetItem *item);
     void setBiblio(Biblio * uneBiblio);
     Biblio* getBiblio();
-    Livre* livreFromItem(QTreeWidgetItem* item);
-    Dossier* dossierFromItem(QTreeWidgetItem* item);
-    QTreeWidgetItem* itemFromLivre(Livre* unLivre);
-    QTreeWidgetItem* itemFromDossier(Dossier* unDossier);
+//    Livre* livreFromItem(QTreeWidgetItem* item);
+//    Dossier* dossierFromItem(QTreeWidgetItem* item);
+//    QTreeWidgetItem* itemFromLivre(Livre* unLivre);
+//    QTreeWidgetItem* itemFromDossier(Dossier* unDossier);
     void updateStatusBar();
 
     ~MainWindow();
@@ -47,7 +47,7 @@ signals:
     void dragDropSignal();
 
 public slots:
-    void changeFicheLivre(QTreeWidgetItem *item);
+    void doubleClickItemSlot(QTreeWidgetItem *item);
     void contextMenuAction(QAction *action);
     void contextMenuChange(QTreeWidgetItem *item);
     void buttonEditChange(bool mode);
@@ -62,7 +62,9 @@ private:
     QGridLayout * mainLayout;
     QTreeWidget * tree; // ou listes
     FicheLivre * ficheLivre;
-    vector<ItemIndex*> index;
+//    vector<ItemIndex*> index;
+    map<QTreeWidgetItem*,Dossier*> dossierMap;
+    map<QTreeWidgetItem*,Livre*> livreMap;
     QMenu * contextMenu;
     QAction * addDossierAction;
     QAction * addLivreAction;

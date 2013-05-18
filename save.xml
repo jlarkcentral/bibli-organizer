@@ -8,6 +8,7 @@
                     <notesPerso></notesPerso>
                 </livre>
             </dossier>
+            <dossier label="Nouveau dossier" />
         </dossier>
         <dossier label="francais">
             <dossier label="Victor Hugo">
@@ -27,5 +28,6 @@
                 </livre>
             </dossier>
         </dossier>
+        <dossier label="Nouveau dossier" />
     </dossier>
 </racine>
