@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     tinyxml/tinyxmlparser.cpp \
     dossier.cpp \
     fichelivre.cpp \
-    itemindex.cpp
+    itemindex.cpp \
+    pilealire.cpp
 
 HEADERS  += mainwindow.h \
     livre.h \
@@ -29,6 +30,7 @@ HEADERS  += mainwindow.h \
     tinyxml/tinystr.h \
     dossier.h \
     fichelivre.h \
-    itemindex.h
+    itemindex.h \
+    pilealire.h
 
 FORMS    += mainwindow.ui

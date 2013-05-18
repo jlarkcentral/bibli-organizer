@@ -11,11 +11,13 @@
 #include <QPushButton>
 #include <QCloseEvent>
 #include <QInputDialog>
+#include <QSplitter>
 
 #include "fichelivre.h"
 #include "dossier.h"
 #include "itemindex.h"
 #include "biblio.h"
+#include "pilealire.h"
 
 namespace Ui {
 class MainWindow;
@@ -64,8 +66,10 @@ public slots:
     
 private:
     QGridLayout * mainLayout;
+    QSplitter * splitter;
     QTreeWidget * tree; // ou listes
     FicheLivre * ficheLivre;
+    PileALire * pilealire;
 //    vector<ItemIndex*> index;
     map<QTreeWidgetItem*,Dossier*> dossierMap;
     map<QTreeWidgetItem*,Livre*> livreMap;

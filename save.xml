@@ -17,14 +17,13 @@
                 <notesPerso></notesPerso>
             </livre>
         </dossier>
-        <dossier label="categfd" />
         <dossier label="francais">
             <dossier label="Victor Hugo">
                 <livre titre="Les Misérables" auteur="rrrrr" genre="" edition="" dateEcriture="1789" dateParution="" lu="y">
                     <notes>dsdfsdfsdfsdfsdfs</notes>
                     <notesPerso>fdsfdsfsdfsdffddsfsdfs</notesPerso>
                 </livre>
-                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="">
+                <livre titre="Nouveau Livre" auteur="" genre="" edition="" dateEcriture="" dateParution="" lu="n">
                     <notes></notes>
                     <notesPerso></notesPerso>
                 </livre>

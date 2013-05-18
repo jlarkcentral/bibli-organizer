@@ -26,6 +26,7 @@ public:
 
 private:
     Dossier * dossierPrincipal;
+    vector<Livre*> livresALire;
 };
 
 #endif // BIBLIO_H

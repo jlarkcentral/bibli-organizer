@@ -1,5 +1,4 @@
 #include <QWidget>
-#include <QSplitter>
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
@@ -24,15 +23,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Layout principal (grid)
     QWidget * centralwidget = new QWidget(this);
-    QSplitter * splitter = new QSplitter();
+    splitter = new QSplitter();
     setCentralWidget(centralwidget);
     mainLayout = new QGridLayout();
     centralwidget->setLayout(mainLayout);
     // Entete fenetre
     setWindowTitle("BiblioApp");
 
-    QStatusBar * stbar = new QStatusBar(this);
-    setStatusBar(stbar);
+    //    QStatusBar * stbar = new QStatusBar(this);
+    //    setStatusBar(stbar);
 
     //Barre des menus
     QMenuBar * bar = new QMenuBar(this);
@@ -41,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu* menuBiblio = new QMenu("&Biblio");
     QAction * nouveauDossier = new QAction("Ajouter un dossier principal",menuBiblio);
     nouveauDossier->setShortcut(QKeySequence("CTRL+A"));
+    QAction * pal = new QAction("Afficher la PAL",menuBiblio);
+    pal->setShortcut(QKeySequence("CTRL+P"));
     QAction * affichage = new QAction("Développer la liste",menuBiblio);
     affichage->setShortcut(QKeySequence("CTRL+D"));
     QAction * sauver = new QAction("Sauvegarder la liste",menuBiblio);
@@ -48,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction * quitter = new QAction("Quitter",menuBiblio);
     quitter->setShortcut(QKeySequence("CTRL+Q"));
     menuBiblio->addAction(nouveauDossier);
+    menuBiblio->addAction(pal);
     menuBiblio->addAction(affichage);
     menuBiblio->addAction(sauver);
     menuBiblio->addAction(quitter);
@@ -67,9 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
     title->setStyleSheet("font-size : 16px");
     mainLayout->addWidget(title,0,0);
 
-    ficheLabel = new QLabel("");
-    ficheLabel->setStyleSheet("font-size : 18px");
-    mainLayout->addWidget(ficheLabel,0,3);
+//    ficheLabel = new QLabel("");
+//    ficheLabel->setStyleSheet("font-size : 18px");
+//    mainLayout->addWidget(ficheLabel,0,3);
 
     // bouton edition
     buttonEdit = new QPushButton("Mode lecture");
@@ -118,6 +120,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ficheLivre->setEditable(false);
     ficheLivre->setDisabled(true);
 
+    // PAL
+    pilealire = new PileALire();
+
     splitter->addWidget(tree);
     splitter->addWidget(ficheLivre);
     splitter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -134,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),ficheLivre,SLOT(setEditable(bool)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),this,SLOT(buttonEditChange(bool)));
     QObject::connect(ficheLivre->titre,SIGNAL(textChanged(QString)),this,SLOT(setFicheLabelText(QString)));
-//    QObject::connect(ficheLivre,SIGNAL(setlu(bool)),this,SLOT(updateNbLivresLus(bool)));
+    //    QObject::connect(ficheLivre,SIGNAL(setlu(bool)),this,SLOT(updateNbLivresLus(bool)));
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
 }
 
@@ -223,7 +228,7 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
     top->setBackgroundColor(0,QColor(230,230,230));
     tree->sortItems(0,Qt::AscendingOrder);
 
-    updateStatusBar();
+//    updateStatusBar();
 }
 
 void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCourant)
@@ -275,6 +280,12 @@ void MainWindow::setLivreFicheLivre(Livre *unLivre,QTreeWidgetItem * item)
 void MainWindow::doubleClickItemSlot(QTreeWidgetItem * item)
 {
     if (item->data(1,0) == 0){
+        if(!ficheLivre->isVisible()){
+            pilealire->close();
+//            buttonEdit->setEnabled(true);
+            buttonEdit->setVisible(true);
+            ficheLivre->show();
+        }
         if(ficheLivre->isEnabled() == false){
             ficheLivre->setEnabled(true);
         }
@@ -324,7 +335,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 buttonEdit->setEnabled(true);
                 buttonEdit->setChecked(true);
                 buttonEditChange(true);
-                updateStatusBar();
+//                updateStatusBar();
             }
             else if(text=="Ajouter un dossier"){
                 // update arbre
@@ -409,11 +420,13 @@ void MainWindow::buttonEditChange(bool mode)
 
 void MainWindow::buttonEditEnable(QTreeWidgetItem *item)
 {
-    if(item->data(1,0) == 0){
-        buttonEdit->setEnabled(true);
-    }
-    else if(item->data(1,0) == 1){
-        buttonEdit->setEnabled(false);
+    if(ficheLivre->isVisible()){
+        if(item->data(1,0) == 0){
+            buttonEdit->setEnabled(true);
+        }
+        else if(item->data(1,0) == 1){
+            buttonEdit->setEnabled(false);
+        }
     }
 }
 
@@ -475,7 +488,7 @@ void MainWindow::deleteItemCourant()
             Livre * l = livreMap.at(itemCourant);
             if(l->getLu() == "y"){
                 nbLivresLus--;
-                updateStatusBar();
+//                updateStatusBar();
             }
             dossierCourant->delLivre(l);
             livreMap.erase(itemCourant);
@@ -543,6 +556,15 @@ void MainWindow::menuAction(QAction *action)
     }
     else if(text == "Quitter"){
         close();
+    }
+    else if(text == "Afficher la PAL"){
+        ficheLivre->close();
+//        buttonEdit->setDisabled(true);
+        buttonEdit->setVisible(false);
+        if(!pilealire->isVisible()){
+            pilealire->show();
+        }
+        splitter->addWidget(pilealire);
     }
 }
 
