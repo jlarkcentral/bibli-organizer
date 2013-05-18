@@ -39,6 +39,8 @@ public:
 //    QTreeWidgetItem* itemFromLivre(Livre* unLivre);
 //    QTreeWidgetItem* itemFromDossier(Dossier* unDossier);
     void updateStatusBar();
+    void loadSettings();
+    void saveSettings();
 
     ~MainWindow();
 
