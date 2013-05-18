@@ -55,8 +55,11 @@ private:
     QTreeWidgetItem * itemCourant;
     Livre * leLivre;
     QCheckBox * checkLu;
+    void emitSetLu();
+    void emitSetNonLu();
     
 signals:
+    void setlu(bool b);
     
 public slots:
     void changeTreeItemTitre(QString newTitre);

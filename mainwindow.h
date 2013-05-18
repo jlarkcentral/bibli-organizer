@@ -59,6 +59,8 @@ public slots:
     void setFicheLabelText(QString qs);
     void menuAction(QAction* action);
     void secureDelete(bool secure);
+    void updateTreeOrder(QTreeWidgetItem *item, int col);
+    void updateNbLivresLus(bool b);
     
 private:
     QGridLayout * mainLayout;
@@ -75,6 +77,7 @@ private:
     Biblio * biblio;
     QPushButton * buttonEdit;
     int nbLivres;
+    int nbLivresLus;
     QTreeWidgetItem *itemCourant;
     QLabel * ficheLabel;
     bool securityOnDelete;

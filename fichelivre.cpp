@@ -257,9 +257,23 @@ void FicheLivre::changeLivreLu(bool lu)
 {
     string estLu = (lu)? "y" : "n";
     leLivre->setLu(estLu);
+    if(lu){
+        emitSetLu();
+    }
+    else emitSetNonLu();
 }
 
 void FicheLivre::focusOnTitre()
 {
     titre->setFocus();
+}
+
+void FicheLivre::emitSetLu()
+{
+    emit setlu(true);
+}
+
+void FicheLivre::emitSetNonLu()
+{
+    emit setlu(false);
 }

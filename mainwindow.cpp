@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     // init param
     loadSettings();
+    nbLivresLus = 0;
 
     // Taille fenetre
     setMinimumWidth(500);
@@ -30,22 +31,29 @@ MainWindow::MainWindow(QWidget *parent) :
     // Entete fenetre
     setWindowTitle("BiblioApp");
 
+    QStatusBar * stbar = new QStatusBar(this);
+    setStatusBar(stbar);
+
     //Barre des menus
     QMenuBar * bar = new QMenuBar(this);
     bar->setMinimumWidth(250);
 
     QMenu* menuBiblio = new QMenu("&Biblio");
     QAction * nouveauDossier = new QAction("Ajouter un dossier principal",menuBiblio);
+    nouveauDossier->setShortcut(QKeySequence("CTRL+A"));
     QAction * affichage = new QAction("Développer la liste",menuBiblio);
+    affichage->setShortcut(QKeySequence("CTRL+D"));
     QAction * sauver = new QAction("Sauvegarder la liste",menuBiblio);
+    sauver->setShortcut(QKeySequence("CTRL+S"));
     QAction * quitter = new QAction("Quitter",menuBiblio);
+    quitter->setShortcut(QKeySequence("CTRL+Q"));
     menuBiblio->addAction(nouveauDossier);
     menuBiblio->addAction(affichage);
     menuBiblio->addAction(sauver);
     menuBiblio->addAction(quitter);
 
     QMenu* menuPref = new QMenu("&Préférences");
-    QAction * securite = new QAction("Confirmer les suppressions",menuPref);
+    QAction * securite = new QAction("Confirmer avant de supprimer",menuPref);
     securite->setCheckable(true);
     securite->setChecked(securityOnDelete);
     menuPref->addAction(securite);
@@ -67,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonEdit = new QPushButton("Mode lecture");
     buttonEdit->setCheckable(true);
     buttonEdit->setEnabled(false);
+    buttonEdit->setFixedWidth(110);
     mainLayout->addWidget(buttonEdit,0,5);
 
     // Arbre de gauche
@@ -120,25 +129,45 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(contextMenuChange(QTreeWidgetItem*)));
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(buttonEditEnable(QTreeWidgetItem*)));
     QObject::connect(tree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(doubleClickItemSlot(QTreeWidgetItem*)));
+    QObject::connect(tree,SIGNAL(itemChanged(QTreeWidgetItem*,int)),this,SLOT(updateTreeOrder(QTreeWidgetItem*,int)));
     QObject::connect(contextMenu,SIGNAL(triggered(QAction*)),this,SLOT(contextMenuAction(QAction*)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),ficheLivre,SLOT(setEditable(bool)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),this,SLOT(buttonEditChange(bool)));
     QObject::connect(ficheLivre->titre,SIGNAL(textChanged(QString)),this,SLOT(setFicheLabelText(QString)));
+//    QObject::connect(ficheLivre,SIGNAL(setlu(bool)),this,SLOT(updateNbLivresLus(bool)));
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
 }
 
-void MainWindow::loadSettings(){
+void MainWindow::updateTreeOrder(QTreeWidgetItem * item, int col)
+{
+    if(col == 0){
+        tree->sortItems(0,Qt::AscendingOrder);
+    }
+}
+
+void MainWindow::updateNbLivresLus(bool b)
+{
+    if(b){
+        nbLivresLus++;
+    }
+    else nbLivresLus--;
+    updateStatusBar();
+}
+
+void MainWindow::loadSettings()
+{
     const char * charfilename = "./settings.xml";
     TiXmlDocument doc(charfilename);
     doc.LoadFile();
 
     TiXmlElement * element = doc.FirstChildElement()->FirstChildElement();
     if(element->Attribute("secureDelete")){
-        secureDelete(element->Attribute("secureDelete") == "true");
+        secureDelete(string(element->Attribute("secureDelete")) == "true");
     }
 }
 
-void MainWindow::saveSettings(){
+void MainWindow::saveSettings()
+{
     const char * charnom = "./settings.xml";
     TiXmlDocument doc(charnom);
 
@@ -183,6 +212,9 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         //        index.push_back(new ItemIndex(livreCourant,newItem));
         livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,livreCourant));
         item->addChild(newItem);
+        if(livreCourant->getLu() == "y"){
+            nbLivresLus++;
+        }
     }
     QTreeWidgetItem * top = tree->topLevelItem(0);
     top->setExpanded(true);
@@ -190,6 +222,8 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
     top->setData(1,0,2);
     top->setBackgroundColor(0,QColor(230,230,230));
     tree->sortItems(0,Qt::AscendingOrder);
+
+    updateStatusBar();
 }
 
 void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCourant)
@@ -247,7 +281,8 @@ void MainWindow::doubleClickItemSlot(QTreeWidgetItem * item)
         //        Livre * livreSelect = livreFromItem(item);
         Livre * livreSelect = livreMap.at(item);
         setLivreFicheLivre(livreSelect,item);
-        ficheLabel->setText("Fiche du livre \"" + QString(livreSelect->getTitre().c_str()) + "\"");
+        //        ficheLabel->setText("Fiche du livre \"" + QString(livreSelect->getTitre().c_str()) + "\"");
+        setWindowTitle("BiblioApp  :   \"" + QString(livreSelect->getTitre().c_str()) + "\"");
     }
     else if(item->data(1,0) == 2){
         item->setExpanded(false);
@@ -265,7 +300,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 // update arbre
                 item->setExpanded(true);
                 QTreeWidgetItem * newItem = new QTreeWidgetItem();
-                newItem->setText(0,"Nouveau livre");
+                newItem->setText(0,"Nouveau Livre");
                 newItem->setData(1,0,0);
                 newItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
                 newItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled);
@@ -284,11 +319,12 @@ void MainWindow::contextMenuAction(QAction *action)
                 ficheLivre->setItemCourant(newItem);
                 tree->selectedItems().at(0)->setSelected(false);
                 newItem->setSelected(true);
-                ficheLabel->setText("Nouvelle fiche de livre");
+                //                ficheLabel->setText("Nouvelle fiche de livre");
+                setWindowTitle("BilioApp  :  Nouvelle fiche de livre");
                 buttonEdit->setEnabled(true);
                 buttonEdit->setChecked(true);
                 buttonEditChange(true);
-                tree->sortItems(0,Qt::AscendingOrder);
+                updateStatusBar();
             }
             else if(text=="Ajouter un dossier"){
                 // update arbre
@@ -305,7 +341,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 in->addDossier(newDossier);
                 //                index.push_back(new ItemIndex(newDossier,newItem));
                 dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,newDossier));
-                tree->sortItems(0,Qt::AscendingOrder);
+                //                tree->sortItems(0,Qt::AscendingOrder);
                 tree->editItem(newItem,0);
             }
             else if(text=="Renommer"){
@@ -427,7 +463,8 @@ void MainWindow::buttonEditEnable(QTreeWidgetItem *item)
 
 void MainWindow::updateStatusBar()
 {
-    this->statusBar()->showMessage("Livres : " + QString::number(nbLivres));
+    nbLivres = livreMap.size();
+    this->statusBar()->showMessage("Livres : " + QString::number(nbLivres) + "       Lus : " + QString::number(nbLivresLus));
 }
 
 void MainWindow::deleteItemCourant()
@@ -436,11 +473,17 @@ void MainWindow::deleteItemCourant()
         Dossier * dossierCourant = dossierMap.at(itemCourant->parent());
         if(itemCourant->data(1,0) == 0){
             Livre * l = livreMap.at(itemCourant);
+            if(l->getLu() == "y"){
+                nbLivresLus--;
+                updateStatusBar();
+            }
             dossierCourant->delLivre(l);
+            livreMap.erase(itemCourant);
         }
         else if(itemCourant->data(1,0) == 1){
             Dossier * d = dossierMap.at(itemCourant);
             dossierCourant->delDossier(d);
+            dossierMap.erase(itemCourant);
         }
         delete(itemCourant);
     }
@@ -464,17 +507,36 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::setFicheLabelText(QString qs)
 {
-    ficheLabel->setText("Fiche du livre \"" + qs + "\"");
+    //    ficheLabel->setText("Fiche du livre \"" + qs + "\"");
+    setWindowTitle("BiblioApp  :  \"" + qs + "\"");
 }
 
 void MainWindow::menuAction(QAction *action)
 {
     QString text = action->text();
     if(text == "Ajouter un dossier principal"){
-
+        QTreeWidgetItem * newItem = new QTreeWidgetItem();
+        newItem->setText(0,"Nouveau dossier");
+        newItem->setData(1,0,1);
+        newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
+        tree->topLevelItem(0)->addChild(newItem);
+        // update modele
+        Dossier * newDossier = new Dossier("Nouveau Dossier");
+        //                Dossier * in = dossierFromItem(item);
+        Dossier * in = dossierMap.at(tree->topLevelItem(0));
+        in->addDossier(newDossier);
+        //                index.push_back(new ItemIndex(newDossier,newItem));
+        dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,newDossier));
+        tree->editItem(newItem,0);
     }
     else if(text == "Développer la liste"){
-
+        tree->expandAll();
+        action->setText("Réduire la liste");
+    }
+    else if(text == "Réduire la liste"){
+        tree->collapseAll();
+        tree->topLevelItem(0)->setExpanded(true);
+        action->setText("Développer la liste");
     }
     else if(text == "Sauvegarder la liste"){
 
