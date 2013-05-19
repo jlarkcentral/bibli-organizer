@@ -6,6 +6,8 @@
 #include <QMessageBox>
 
 #include <iostream>
+#include <iterator>
+#include <algorithm>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -16,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // init param
     loadSettings();
     nbLivresLus = 0;
+    //    livresALireMap = new map<Livre*,QTreeWidgetItem*>();
 
     // Taille fenetre
     setMinimumWidth(500);
@@ -144,24 +147,59 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
 }
 
+void MainWindow::updatePAL()
+{
+    //    typedef map<Livre*,QTreeWidgetItem*>::iterator it_type;
+    //    for(it_type iterator = livresALireMap.begin(); iterator != livresALireMap.end(); iterator++) {
+    //        Livre* l = iterator->first;
+    //        // iterator->second = value
+    //    }
+    pilealire = new PileALire();
+
+    for(map<Livre*, QTreeWidgetItem*>::const_iterator i = livresALireMap.begin(); i != livresALireMap.end(); ++i)
+    {
+        Livre* l = i->first;
+        QTreeWidgetItem * listItem = new QTreeWidgetItem();
+        listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+        listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+        listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+        listItem->setText(0,QString(l->getTitre().c_str()));
+        listItem->setText(1,QString(l->getAuteur().c_str()));
+        listItem->setText(2,QString(l->getDateEcriture().c_str()));
+        pilealire->palList->addTopLevelItem(listItem);
+    }
+}
+
 void MainWindow::changePAL(QTreeWidgetItem *item, bool aLire)
 {
     Livre * l = livreMap.at(item);
     if(aLire){
-        if(l->getALire() != "y"){
-            QTreeWidgetItem * listItem = new QTreeWidgetItem();
-            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
-            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            listItem->setText(0,QString(l->getTitre().c_str()));
-            listItem->setText(1,QString(l->getAuteur().c_str()));
-            listItem->setText(2,QString(l->getDateEcriture().c_str()));
-            pilealire->palList->addTopLevelItem(listItem);
+        //        if(l->getALire() != "y" ){
+        map<Livre*,QTreeWidgetItem*>::const_iterator it = livresALireMap.find(l);
+        if(it!=livresALireMap.end()){
+        }
+        else{
+            livresALireMap.insert(pair<Livre*,QTreeWidgetItem*>(l,item));
+
+            cout << "ajout " << l->getTitre() << endl;
+
+            //            QTreeWidgetItem * listItem = new QTreeWidgetItem();
+            //            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            //            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+            //            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            //            listItem->setText(0,QString(l->getTitre().c_str()));
+            //            listItem->setText(1,QString(l->getAuteur().c_str()));
+            //            listItem->setText(2,QString(l->getDateEcriture().c_str()));
+            //            pilealire->palList->addTopLevelItem(listItem);
+            //            }
         }
     }
     else{
-        if(l->getLu() == "y"){
-//            listItem = item du livre -> delete Item
+        map<Livre*,QTreeWidgetItem*>::const_iterator it = livresALireMap.find(l);
+        if(it!=livresALireMap.end()){
+            //        if(l->getLu() == "y"){
+            cout << "erase " << l->getTitre() << endl;
+            livresALireMap.erase(l);
         }
     }
 }
@@ -244,20 +282,22 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
             nbLivresLus++;
         }
         if(livreCourant->getALire() == "y"){
-            QTreeWidgetItem * listItem = new QTreeWidgetItem();
-            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
-            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            listItem->setText(0,QString(livreCourant->getTitre().c_str()));
-            listItem->setText(1,QString((livreCourant->getAuteur()).c_str()));
-            listItem->setText(2,QString(livreCourant->getDateEcriture().c_str()));
-            pilealire->palList->addTopLevelItem(listItem);
+            livresALireMap.insert(pair<Livre*,QTreeWidgetItem*>(livreCourant,newItem));
+            //            QTreeWidgetItem * listItem = new QTreeWidgetItem();
+            //            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            //            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+            //            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+            //            listItem->setText(0,QString(livreCourant->getTitre().c_str()));
+            //            listItem->setText(1,QString((livreCourant->getAuteur()).c_str()));
+            //            listItem->setText(2,QString(livreCourant->getDateEcriture().c_str()));
+            //            pilealire->palList->addTopLevelItem(listItem);
         }
     }
     QTreeWidgetItem * top = tree->topLevelItem(0);
     top->setExpanded(true);
     top->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDropEnabled);
     top->setData(1,0,2);
+    top->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::DemiBold));
     top->setBackgroundColor(0,QColor(230,230,230));
     tree->sortItems(0,Qt::AscendingOrder);
 
@@ -601,6 +641,7 @@ void MainWindow::menuAction(QAction *action)
         buttonEdit->setDisabled(true);
         //        buttonEdit->setVisible(false);
         if(!pilealire->isVisible()){
+            updatePAL();
             //            pilealire->show();
             pilealire->setFixedSize(s);
             pilealire->setVisible(true);

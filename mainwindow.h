@@ -13,6 +13,8 @@
 #include <QInputDialog>
 #include <QSplitter>
 
+#include <algorithm>
+
 #include "fichelivre.h"
 #include "dossier.h"
 #include "itemindex.h"
@@ -64,6 +66,7 @@ public slots:
     void updateTreeOrder(QTreeWidgetItem *item, int col);
     void updateNbLivresLus(bool b);
     void changePAL(QTreeWidgetItem *item, bool aLire);
+    void updatePAL();
     
 private:
     QGridLayout * mainLayout;
@@ -74,6 +77,7 @@ private:
 //    vector<ItemIndex*> index;
     map<QTreeWidgetItem*,Dossier*> dossierMap;
     map<QTreeWidgetItem*,Livre*> livreMap;
+    map<Livre*,QTreeWidgetItem*> livresALireMap;
     QMenu * contextMenu;
     QAction * addDossierAction;
     QAction * addLivreAction;

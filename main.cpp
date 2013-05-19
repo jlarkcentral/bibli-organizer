@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf8"));
 
     Biblio * biblio = new Biblio();
-    biblio->loadXml("/home/primo/Documents/QtCreator/bibli-organizer/save.xml");
+    biblio->loadXml("./save.xml");
 
     QApplication a(argc, argv);
     MainWindow w;
