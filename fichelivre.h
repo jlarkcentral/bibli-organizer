@@ -25,6 +25,7 @@ public:
     QString getEdition();
     QString getDateEcriture();
     QString getDateParution();
+    QTreeWidgetItem * getItemCourant();
     bool getCheckLu();
     bool isEditable();
     void setCheckLu(bool lu);

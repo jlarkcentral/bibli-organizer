@@ -209,6 +209,11 @@ QString FicheLivre::getDateParution()
     return dateParution->text();
 }
 
+QTreeWidgetItem * FicheLivre::getItemCourant()
+{
+    return itemCourant;
+}
+
 bool FicheLivre::isEditable()
 {
     return editable;

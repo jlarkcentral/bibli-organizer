@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     menuPref->addAction(securite);
 
     QMenu* menuExport = new QMenu("&Exporter");
-    QAction * exporter = new QAction("Exporter la biblio en texte");
+    QAction * exporter = new QAction("Exporter la biblio en texte",menuExport);
     menuExport->addAction(exporter);
 
     bar->addMenu(menuBiblio);
@@ -152,17 +152,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::livrePlusALire(QTreeWidgetItem *item)
 {
-    cout << "livrePLusalire" << endl;
     map<QTreeWidgetItem*,Livre*>::const_iterator it;
     Livre* l;
     for (it = livreMap.begin(); it != livreMap.end(); ++it)
     {
-//        if (it->second == item)
-//        {
-//            cout << "l" << endl;
-//            l = it->first;
-//            break;
-//        }
         l = it->second;
         if(l->getTitre() == item->text(0).toStdString()
                 && l->getAuteur() == item->text(1).toStdString()){
@@ -170,11 +163,9 @@ void MainWindow::livrePlusALire(QTreeWidgetItem *item)
         }
     }
     if(l){
-        cout << "plop" << endl;
         map<Livre*,QTreeWidgetItem*>::const_iterator ite = livresALireMap.find(l);
         if(ite!=livresALireMap.end()){
             livresALireMap.erase(l);
-            cout << "set a lire N" << endl;
             l->setALire("n");
         }
         delete(item);
@@ -408,7 +399,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 in->addLivre(newLivre);
                 livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,newLivre));
                 // update fiche
-                setLivreFicheLivre(newLivre,0);
+                setLivreFicheLivre(newLivre,newItem);
                 ficheLivre->setEditable(true);
                 ficheLivre->focusOnTitre();
                 ficheLivre->setItemCourant(newItem);
@@ -543,6 +534,9 @@ void MainWindow::deleteItemCourant()
             dossierCourant->delLivre(l);
             livreMap.erase(itemCourant);
             livresALireMap.erase(l);
+            if(ficheLivre->getItemCourant() == itemCourant){
+                ficheLivre->setDisabled(true);
+            }
         }
         else if(itemCourant->data(1,0) == 1){
             Dossier * d = dossierMap.at(itemCourant);
@@ -600,7 +594,7 @@ void MainWindow::menuAction(QAction *action)
         action->setText("Développer la liste");
     }
     else if(text == "Sauvegarder la liste"){
-
+        save();
     }
     else if(text == "Quitter"){
         close();
