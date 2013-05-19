@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<racine>
+    <dossier label="Bibliothèque">
+        <dossier label="anglais">
+            <dossier label="Beckford">
+                <livre titre="Vathek" auteur="WB" genre="" edition="voila" dateEcriture="120" dateParution="" lu="n" alire="y">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
+        <dossier label="francais">
+            <dossier label="Victor Hugo">
+                <livre titre="Les Misérables" auteur="rrrrr" genre="youpla" edition="" dateEcriture="1789" dateParution="" lu="y" alire="n">
+                    <notes>aèa</notes>
+                    <notesPerso>fdsfdsfsdfsdffddsfsdfs</notesPerso>
+                </livre>
+            </dossier>
+            <dossier label="Voltaire">
+                <livre titre="Candide" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="n" alire="n">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+                <livre titre="Zadig 2 le retour" auteur="Voltaire" genre="conte" edition="la belle edition" dateEcriture="" dateParution="" lu="y" alire="n">
+                    <notes></notes>
+                    <notesPerso></notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
+    </dossier>
+</racine>
