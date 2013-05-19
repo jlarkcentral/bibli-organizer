@@ -44,7 +44,6 @@ public:
     QLineEdit * titre;
 
 private:
-    //QLineEdit * titre;
     QLineEdit * auteur;
     QLineEdit * genre;
     QLineEdit * edition;
@@ -63,7 +62,7 @@ private:
     void emitSetNonALire();
     
 signals:
-    void setLu(bool b);
+    void setLu(QTreeWidgetItem* item,bool b);
     void setALire(QTreeWidgetItem* item,bool b);
     
 public slots:

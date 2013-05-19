@@ -38,10 +38,6 @@ public:
     void setLivreFicheLivre(Livre * unLivre, QTreeWidgetItem *item);
     void setBiblio(Biblio * uneBiblio);
     Biblio* getBiblio();
-//    Livre* livreFromItem(QTreeWidgetItem* item);
-//    Dossier* dossierFromItem(QTreeWidgetItem* item);
-//    QTreeWidgetItem* itemFromLivre(Livre* unLivre);
-//    QTreeWidgetItem* itemFromDossier(Dossier* unDossier);
     void updateStatusBar();
     void loadSettings();
     void saveSettings();
@@ -66,15 +62,16 @@ public slots:
     void updateTreeOrder(QTreeWidgetItem *item, int col);
     void updateNbLivresLus(bool b);
     void changePAL(QTreeWidgetItem *item, bool aLire);
+    void changePALerase(QTreeWidgetItem *item, bool lu);
     void updatePAL();
+    void livrePlusALire(QTreeWidgetItem *item);
     
 private:
     QGridLayout * mainLayout;
     QSplitter * splitter;
-    QTreeWidget * tree; // ou listes
+    QTreeWidget * tree;
     FicheLivre * ficheLivre;
     PileALire * pilealire;
-//    vector<ItemIndex*> index;
     map<QTreeWidgetItem*,Dossier*> dossierMap;
     map<QTreeWidgetItem*,Livre*> livreMap;
     map<Livre*,QTreeWidgetItem*> livresALireMap;
@@ -83,6 +80,7 @@ private:
     QAction * addLivreAction;
     QAction * renameAction;
     QAction * deleteAction;
+    QAction * addToPALAction;
     Biblio * biblio;
     QPushButton * buttonEdit;
     int nbLivres;

@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // init param
     loadSettings();
     nbLivresLus = 0;
-    //    livresALireMap = new map<Livre*,QTreeWidgetItem*>();
 
     // Taille fenetre
     setMinimumWidth(500);
@@ -32,9 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
     centralwidget->setLayout(mainLayout);
     // Entete fenetre
     setWindowTitle("BiblioApp");
-
-    //    QStatusBar * stbar = new QStatusBar(this);
-    //    setStatusBar(stbar);
 
     //Barre des menus
     QMenuBar * bar = new QMenuBar(this);
@@ -63,18 +59,19 @@ MainWindow::MainWindow(QWidget *parent) :
     securite->setChecked(securityOnDelete);
     menuPref->addAction(securite);
 
+    QMenu* menuExport = new QMenu("&Exporter");
+    QAction * exporter = new QAction("Exporter la biblio en texte");
+    menuExport->addAction(exporter);
+
     bar->addMenu(menuBiblio);
     bar->addMenu(menuPref);
+    bar->addMenu(menuExport);
 
     // titre - espacement
     QLabel * title = new QLabel("");
     title->setAlignment(Qt::AlignCenter);
     title->setStyleSheet("font-size : 16px");
     mainLayout->addWidget(title,0,0);
-
-    //    ficheLabel = new QLabel("");
-    //    ficheLabel->setStyleSheet("font-size : 18px");
-    //    mainLayout->addWidget(ficheLabel,0,3);
 
     // bouton edition
     buttonEdit = new QPushButton("Mode lecture");
@@ -96,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addDossierAction = new QAction("Ajouter un dossier",contextMenu);
     addLivreAction = new QAction("Ajouter un livre",contextMenu);
     renameAction = new QAction("Renommer",contextMenu);
+    addToPALAction = new QAction("Ajouter à la PAL",contextMenu);
     deleteAction = new QAction("Supprimer",contextMenu);
     contextMenu->addAction(renameAction);
     contextMenu->addSeparator();
@@ -103,12 +101,15 @@ MainWindow::MainWindow(QWidget *parent) :
     contextMenu->addSeparator();
     contextMenu->addAction(addDossierAction);
     contextMenu->addSeparator();
+    contextMenu->addAction(addToPALAction);
+    contextMenu->addSeparator();
     contextMenu->addAction(deleteAction);
     contextMenu->addSeparator();
 
     tree->addAction(renameAction);
     tree->addAction(addLivreAction);
     tree->addAction(addDossierAction);
+    tree->addAction(addToPALAction);
     tree->addAction(deleteAction);
 
     tree->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -142,18 +143,46 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),ficheLivre,SLOT(setEditable(bool)));
     QObject::connect(buttonEdit,SIGNAL(toggled(bool)),this,SLOT(buttonEditChange(bool)));
     QObject::connect(ficheLivre->titre,SIGNAL(textChanged(QString)),this,SLOT(setFicheLabelText(QString)));
-    //    QObject::connect(ficheLivre,SIGNAL(setlu(bool)),this,SLOT(updateNbLivresLus(bool)));
     QObject::connect(ficheLivre,SIGNAL(setALire(QTreeWidgetItem*,bool)),this,SLOT(changePAL(QTreeWidgetItem*,bool)));
+    QObject::connect(ficheLivre,SIGNAL(setLu(QTreeWidgetItem*,bool)),this,SLOT(changePALerase(QTreeWidgetItem*,bool)));
+    QObject::connect(pilealire,SIGNAL(plusALire(QTreeWidgetItem*)),this,SLOT(livrePlusALire(QTreeWidgetItem*)));
+    QObject::connect(pilealire,SIGNAL(plusALire(QTreeWidgetItem*)),pilealire,SLOT(test()));
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
+}
+
+void MainWindow::livrePlusALire(QTreeWidgetItem *item)
+{
+    cout << "livrePLusalire" << endl;
+    map<QTreeWidgetItem*,Livre*>::const_iterator it;
+    Livre* l;
+    for (it = livreMap.begin(); it != livreMap.end(); ++it)
+    {
+//        if (it->second == item)
+//        {
+//            cout << "l" << endl;
+//            l = it->first;
+//            break;
+//        }
+        l = it->second;
+        if(l->getTitre() == item->text(0).toStdString()
+                && l->getAuteur() == item->text(1).toStdString()){
+            break;
+        }
+    }
+    if(l){
+        cout << "plop" << endl;
+        map<Livre*,QTreeWidgetItem*>::const_iterator ite = livresALireMap.find(l);
+        if(ite!=livresALireMap.end()){
+            livresALireMap.erase(l);
+            cout << "set a lire N" << endl;
+            l->setALire("n");
+        }
+        delete(item);
+    }
 }
 
 void MainWindow::updatePAL()
 {
-    //    typedef map<Livre*,QTreeWidgetItem*>::iterator it_type;
-    //    for(it_type iterator = livresALireMap.begin(); iterator != livresALireMap.end(); iterator++) {
-    //        Livre* l = iterator->first;
-    //        // iterator->second = value
-    //    }
     pilealire = new PileALire();
 
     for(map<Livre*, QTreeWidgetItem*>::const_iterator i = livresALireMap.begin(); i != livresALireMap.end(); ++i)
@@ -166,39 +195,38 @@ void MainWindow::updatePAL()
         listItem->setText(0,QString(l->getTitre().c_str()));
         listItem->setText(1,QString(l->getAuteur().c_str()));
         listItem->setText(2,QString(l->getDateEcriture().c_str()));
-        pilealire->palList->addTopLevelItem(listItem);
+        pilealire->palList->topLevelItem(0)->addChild(listItem);
     }
+    pilealire->palList->sortItems(0,Qt::AscendingOrder);
+    pilealire->palList->topLevelItem(0)->setExpanded(true);
 }
 
 void MainWindow::changePAL(QTreeWidgetItem *item, bool aLire)
 {
     Livre * l = livreMap.at(item);
     if(aLire){
-        //        if(l->getALire() != "y" ){
         map<Livre*,QTreeWidgetItem*>::const_iterator it = livresALireMap.find(l);
         if(it!=livresALireMap.end()){
         }
         else{
             livresALireMap.insert(pair<Livre*,QTreeWidgetItem*>(l,item));
-
-            cout << "ajout " << l->getTitre() << endl;
-
-            //            QTreeWidgetItem * listItem = new QTreeWidgetItem();
-            //            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            //            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
-            //            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            //            listItem->setText(0,QString(l->getTitre().c_str()));
-            //            listItem->setText(1,QString(l->getAuteur().c_str()));
-            //            listItem->setText(2,QString(l->getDateEcriture().c_str()));
-            //            pilealire->palList->addTopLevelItem(listItem);
-            //            }
         }
     }
     else{
         map<Livre*,QTreeWidgetItem*>::const_iterator it = livresALireMap.find(l);
         if(it!=livresALireMap.end()){
-            //        if(l->getLu() == "y"){
-            cout << "erase " << l->getTitre() << endl;
+            livresALireMap.erase(l);
+            l->setALire("n");
+        }
+    }
+}
+
+void MainWindow::changePALerase(QTreeWidgetItem *item, bool lu)
+{
+    Livre * l = livreMap.at(item);
+    if(lu){
+        map<Livre*,QTreeWidgetItem*>::const_iterator it = livresALireMap.find(l);
+        if(it!=livresALireMap.end()){
             livresALireMap.erase(l);
         }
     }
@@ -263,7 +291,6 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         newItem->setText(0,QString(dossierCourant->getLabel().c_str()));
         newItem->setData(1,0,1);
         newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
-        //        index.push_back(new ItemIndex(dossierCourant,newItem));
         dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,dossierCourant));
         item->addChild(newItem);
         biblioToTree((dossier->getDossiers().at(i)),newItem);
@@ -275,7 +302,6 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         newItem->setData(1,0,0);
         newItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
         newItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled);
-        //        index.push_back(new ItemIndex(livreCourant,newItem));
         livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,livreCourant));
         item->addChild(newItem);
         if(livreCourant->getLu() == "y"){
@@ -283,14 +309,6 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         }
         if(livreCourant->getALire() == "y"){
             livresALireMap.insert(pair<Livre*,QTreeWidgetItem*>(livreCourant,newItem));
-            //            QTreeWidgetItem * listItem = new QTreeWidgetItem();
-            //            listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            //            listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
-            //            listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
-            //            listItem->setText(0,QString(livreCourant->getTitre().c_str()));
-            //            listItem->setText(1,QString((livreCourant->getAuteur()).c_str()));
-            //            listItem->setText(2,QString(livreCourant->getDateEcriture().c_str()));
-            //            pilealire->palList->addTopLevelItem(listItem);
         }
     }
     QTreeWidgetItem * top = tree->topLevelItem(0);
@@ -300,8 +318,6 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
     top->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::DemiBold));
     top->setBackgroundColor(0,QColor(230,230,230));
     tree->sortItems(0,Qt::AscendingOrder);
-
-    //    updateStatusBar();
 }
 
 void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCourant)
@@ -313,7 +329,6 @@ void MainWindow::treeToBiblio(QTreeWidgetItem *itemCourant,Dossier * dossierCour
             treeToBiblio(itemCourant->child(i),d);
         }
         else if(itemCourant->child(i)->data(1,0) == 0){
-            //            Livre * l = livreFromItem(itemCourant->child(i));
             Livre * l = livreMap.at(itemCourant->child(i));
             dossierCourant->addLivre(l);
         }
@@ -349,27 +364,21 @@ void MainWindow::setLivreFicheLivre(Livre *unLivre,QTreeWidgetItem * item)
     ficheLivre->setNotesPerso(QString(unLivre->getNotesPerso().c_str()));
     ficheLivre->setCheckLu(unLivre->getLu() == "y");
     ficheLivre->setCheckALire(unLivre->getALire() == "y");
-    //    ficheLivre = new FicheLivre(this,unLivre,item);
 }
 
 void MainWindow::doubleClickItemSlot(QTreeWidgetItem * item)
 {
     if (item->data(1,0) == 0){
         if(!ficheLivre->isVisible()){
-            //            pilealire->close();
             pilealire->setVisible(false);
             buttonEdit->setEnabled(true);
-            //            buttonEdit->setVisible(true);
-            //            ficheLivre->show();
             ficheLivre->setVisible(true);
         }
         if(ficheLivre->isEnabled() == false){
             ficheLivre->setEnabled(true);
         }
-        //        Livre * livreSelect = livreFromItem(item);
         Livre * livreSelect = livreMap.at(item);
         setLivreFicheLivre(livreSelect,item);
-        //        ficheLabel->setText("Fiche du livre \"" + QString(livreSelect->getTitre().c_str()) + "\"");
         setWindowTitle("BiblioApp  :   \"" + QString(livreSelect->getTitre().c_str()) + "\"");
     }
     else if(item->data(1,0) == 2){
@@ -395,10 +404,8 @@ void MainWindow::contextMenuAction(QAction *action)
                 item->addChild(newItem);
                 // update modele
                 Livre * newLivre = new Livre("Nouveau Livre");
-                //                Dossier * in = dossierFromItem(item);
                 Dossier * in = dossierMap.at(item);
                 in->addLivre(newLivre);
-                //                index.push_back(new ItemIndex(newLivre,newItem));
                 livreMap.insert(pair<QTreeWidgetItem*,Livre*>(newItem,newLivre));
                 // update fiche
                 setLivreFicheLivre(newLivre,0);
@@ -407,12 +414,10 @@ void MainWindow::contextMenuAction(QAction *action)
                 ficheLivre->setItemCourant(newItem);
                 tree->selectedItems().at(0)->setSelected(false);
                 newItem->setSelected(true);
-                //                ficheLabel->setText("Nouvelle fiche de livre");
                 setWindowTitle("BilioApp  :  Nouvelle fiche de livre");
                 buttonEdit->setEnabled(true);
                 buttonEdit->setChecked(true);
                 buttonEditChange(true);
-                //                updateStatusBar();
             }
             else if(text=="Ajouter un dossier"){
                 // update arbre
@@ -424,12 +429,9 @@ void MainWindow::contextMenuAction(QAction *action)
                 item->addChild(newItem);
                 // update modele
                 Dossier * newDossier = new Dossier("Nouveau Dossier");
-                //                Dossier * in = dossierFromItem(item);
                 Dossier * in = dossierMap.at(item);
                 in->addDossier(newDossier);
-                //                index.push_back(new ItemIndex(newDossier,newItem));
                 dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,newDossier));
-                //                tree->sortItems(0,Qt::AscendingOrder);
                 tree->editItem(newItem,0);
             }
             else if(text=="Renommer"){
@@ -438,6 +440,19 @@ void MainWindow::contextMenuAction(QAction *action)
         }
         if(item->data(1,0) == 0){
             addDossierAction->setDisabled(true);
+            if(text == "Ajouter à la PAL"){
+                changePAL(item,true);
+                Livre * l = livreMap.at(item);
+                QTreeWidgetItem * listItem = new QTreeWidgetItem();
+                listItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+                listItem->setFont(1,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
+                listItem->setFont(2,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Light));
+                listItem->setText(0,QString(l->getTitre().c_str()));
+                listItem->setText(1,QString(l->getAuteur().c_str()));
+                listItem->setText(2,QString(l->getDateEcriture().c_str()));
+                pilealire->palList->topLevelItem(0)->addChild(listItem);
+                pilealire->palList->sortItems(0,Qt::AscendingOrder);
+            }
         }
         if(text=="Supprimer"){
             itemCourant = item;
@@ -470,18 +485,21 @@ void MainWindow::contextMenuChange(QTreeWidgetItem *item)
         addLivreAction->setEnabled(true);
         renameAction->setEnabled(true);
         deleteAction->setEnabled(true);
+        addToPALAction->setEnabled(false);
     }
     if(item->data(1,0) == 0){
         addDossierAction->setEnabled(false);
         addLivreAction->setEnabled(false);
         renameAction->setEnabled(false);
         deleteAction->setEnabled(true);
+        addToPALAction->setEnabled(true);
     }
     if(item->data(1,0) == 2){
         addDossierAction->setEnabled(true);
         addLivreAction->setEnabled(true);
         renameAction->setEnabled(false);
         deleteAction->setEnabled(false);
+        addToPALAction->setEnabled(false);
     }
 }
 
@@ -507,50 +525,6 @@ void MainWindow::buttonEditEnable(QTreeWidgetItem *item)
     }
 }
 
-//Livre* MainWindow::livreFromItem(QTreeWidgetItem *item)
-//{
-//    for(uint i = 0 ; i < index.size() ; i++){
-//        ItemIndex * cii = index.at(i);
-//        if(cii->getTreeItem() == item){
-//            return cii->getLivre();
-//        }
-//    }
-//    return 0;
-//}
-
-//Dossier* MainWindow::dossierFromItem(QTreeWidgetItem *item)
-//{
-//    for(uint i = 0 ; i < index.size() ; i++){
-//        ItemIndex * cii = index.at(i);
-//        if(cii->getTreeItem() == item){
-//            return cii->getDossier();
-//        }
-//    }
-//    return 0;
-//}
-
-//QTreeWidgetItem* MainWindow::itemFromDossier(Dossier *unDossier)
-//{
-//    for(uint i = 0 ; i < index.size() ; i++){
-//        ItemIndex * cii = index.at(i);
-//        if(cii->getDossier() == unDossier){
-//            return cii->getTreeItem();
-//        }
-//    }
-//    return 0;
-//}
-
-//QTreeWidgetItem* MainWindow::itemFromLivre(Livre *unLivre)
-//{
-//    for(uint i = 0 ; i < index.size() ; i++){
-//        ItemIndex * cii = index.at(i);
-//        if(cii->getLivre() == unLivre){
-//            return cii->getTreeItem();
-//        }
-//    }
-//    return 0;
-//}
-
 void MainWindow::updateStatusBar()
 {
     nbLivres = livreMap.size();
@@ -565,10 +539,10 @@ void MainWindow::deleteItemCourant()
             Livre * l = livreMap.at(itemCourant);
             if(l->getLu() == "y"){
                 nbLivresLus--;
-                //                updateStatusBar();
             }
             dossierCourant->delLivre(l);
             livreMap.erase(itemCourant);
+            livresALireMap.erase(l);
         }
         else if(itemCourant->data(1,0) == 1){
             Dossier * d = dossierMap.at(itemCourant);
@@ -597,7 +571,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::setFicheLabelText(QString qs)
 {
-    //    ficheLabel->setText("Fiche du livre \"" + qs + "\"");
     setWindowTitle("BiblioApp  :  \"" + qs + "\"");
 }
 
@@ -612,10 +585,8 @@ void MainWindow::menuAction(QAction *action)
         tree->topLevelItem(0)->addChild(newItem);
         // update modele
         Dossier * newDossier = new Dossier("Nouveau Dossier");
-        //                Dossier * in = dossierFromItem(item);
         Dossier * in = dossierMap.at(tree->topLevelItem(0));
         in->addDossier(newDossier);
-        //                index.push_back(new ItemIndex(newDossier,newItem));
         dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,newDossier));
         tree->editItem(newItem,0);
     }
@@ -635,16 +606,15 @@ void MainWindow::menuAction(QAction *action)
         close();
     }
     else if(text == "Afficher la PAL"){
-        //        ficheLivre->close();
         QSize s = ficheLivre->size();
         ficheLivre->setVisible(false);
         buttonEdit->setDisabled(true);
-        //        buttonEdit->setVisible(false);
         if(!pilealire->isVisible()){
             updatePAL();
-            //            pilealire->show();
             pilealire->setFixedSize(s);
             pilealire->setVisible(true);
+
+            QObject::connect(pilealire,SIGNAL(plusALire(QTreeWidgetItem*)),this,SLOT(livrePlusALire(QTreeWidgetItem*)));
         }
         splitter->addWidget(pilealire);
     }

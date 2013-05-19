@@ -108,7 +108,7 @@ void Biblio::biblioToXml(Dossier * dossierCourant,TiXmlElement * elementCourant)
 
 void Biblio::saveBiblio()
 {
-    string filename = "/home/primo/Documents/QtCreator/bibli-organizer/save.xml";
+    string filename = "./save.xml";
     const char * charnom = filename.c_str();
     TiXmlDocument doc(charnom);
 
@@ -121,12 +121,3 @@ void Biblio::saveBiblio()
 
     doc.SaveFile();
 }
-
-//void Biblio::addLivreALire(Livre *l)
-//{
-//    if(find(livresALire.begin(), livresALire.end(), l) != livresALire.end()) {
-//    }
-//    else{
-//        livresALire.push_back(l);
-//    }
-//}

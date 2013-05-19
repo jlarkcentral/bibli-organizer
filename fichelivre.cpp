@@ -152,7 +152,6 @@ void FicheLivre::setEditable(bool b)
     dateParution->setReadOnly(!b);
     notes->setReadOnly(!b);
     notesPerso->setReadOnly(!b);
-    //checkLu->setEnabled(b);
 }
 
 void FicheLivre::setItemCourant(QTreeWidgetItem *item)
@@ -294,12 +293,12 @@ void FicheLivre::focusOnTitre()
 
 void FicheLivre::emitSetLu()
 {
-    emit setLu(true);
+    emit setLu(itemCourant, true);
 }
 
 void FicheLivre::emitSetNonLu()
 {
-    emit setLu(false);
+    emit setLu(itemCourant, false);
 }
 
 void FicheLivre::emitSetALire()

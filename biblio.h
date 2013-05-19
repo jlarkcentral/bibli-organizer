@@ -24,11 +24,9 @@ public:
     void printBiblio();
     void biblioToXml(Dossier *dossierCourant, TiXmlElement *elementCourant);
     void saveBiblio();
-//    void addLivreALire(Livre* l);
 
 private:
     Dossier * dossierPrincipal;
-//    vector<Livre*> livresALire;
 };
 
 #endif // BIBLIO_H
