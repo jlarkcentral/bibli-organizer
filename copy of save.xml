@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<racine>
+    <dossier label="Bibliothèque">
+        <dossier label="francais">
+            <dossier label="Victor Hugo">
+                <livre titre="Les Misérables" auteur="Victor Hugo" genre="" edition="" dateEcriture="" dateParution="">
+                    <notes>
+						bli bli bla bla
+                    </notes>
+                    <notesPerso>
+                    </notesPerso>
+                </livre>
+            </dossier>
+            <dossier label="Voltaire">
+                <livre titre="Zadig 2 le retour" auteur="Voltaire" genre="" edition="" dateEcriture="" dateParution="">
+                    <notes>
+                    </notes>
+                    <notesPerso>
+                    </notesPerso>
+                </livre>
+                <livre titre="Candide" auteur="Voltaire" genre="" edition="" dateEcriture="" dateParution="">
+                    <notes>
+                    </notes>
+                    <notesPerso>
+                    </notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
+        <dossier label="anglais">
+            <dossier label="Beckford">
+                <livre titre="Vathek" auteur="Beckford" genre="" edition="" dateEcriture="" dateParution="">
+                    <notes>
+                    </notes>
+                    <notesPerso>
+                    </notesPerso>
+                </livre>
+            </dossier>
+        </dossier>
+    </dossier>
+</racine>
