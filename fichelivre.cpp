@@ -9,6 +9,7 @@ FicheLivre::FicheLivre(QWidget *parent,Livre *unLivre):
     // les champs
     QLabel * auteurLabel = new QLabel("Auteur :");
     auteur = new QLineEdit();
+    auteur->setAlignment(Qt::AlignLeft);
     QHBoxLayout * auteurLayout = new QHBoxLayout();
     auteurLayout->addWidget(auteurLabel);
     auteurLayout->addWidget(auteur);

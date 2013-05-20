@@ -281,6 +281,7 @@ void MainWindow::biblioToTree(Dossier * dossier,QTreeWidgetItem * item)
         Dossier * dossierCourant = dossier->getDossiers().at(i);
         newItem->setText(0,QString(dossierCourant->getLabel().c_str()));
         newItem->setData(1,0,1);
+        newItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::Normal));
         newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
         dossierMap.insert(pair<QTreeWidgetItem*,Dossier*>(newItem,dossierCourant));
         item->addChild(newItem);
@@ -416,6 +417,7 @@ void MainWindow::contextMenuAction(QAction *action)
                 QTreeWidgetItem * newItem = new QTreeWidgetItem();
                 newItem->setText(0,"Nouveau dossier");
                 newItem->setData(1,0,1);
+//                newItem->setFont(0,QFont(tree->font().rawName(),tree->font().pointSize(),QFont::DemiBold));
                 newItem->setFlags(Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
                 item->addChild(newItem);
                 // update modele
@@ -540,6 +542,13 @@ void MainWindow::deleteItemCourant()
         }
         else if(itemCourant->data(1,0) == 1){
             Dossier * d = dossierMap.at(itemCourant);
+            for(int i = 0 ; i < d->getLivres().size() ; i++){
+                Livre * l = d->getLivres().at(i);
+                if(l == livreMap.at(ficheLivre->getItemCourant())){
+                    ficheLivre->setDisabled(true);
+                }
+                delete(l);
+            }
             dossierCourant->delDossier(d);
             dossierMap.erase(itemCourant);
         }
