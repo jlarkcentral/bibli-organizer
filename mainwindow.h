@@ -65,6 +65,7 @@ public slots:
     void changePALerase(QTreeWidgetItem *item, bool lu);
     void updatePAL();
     void livrePlusALire(QTreeWidgetItem *item);
+    void exportToTxt();
     
 private:
     QGridLayout * mainLayout;

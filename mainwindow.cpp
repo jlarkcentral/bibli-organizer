@@ -134,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainLayout->addWidget(splitter,1,0,1,6);
 
     QObject::connect(menuBiblio,SIGNAL(triggered(QAction*)),this,SLOT(menuAction(QAction*)));
+    QObject::connect(exporter,SIGNAL(triggered()),this,SLOT(exportToTxt()));
     QObject::connect(securite,SIGNAL(toggled(bool)),this,SLOT(secureDelete(bool)));
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(contextMenuChange(QTreeWidgetItem*)));
     QObject::connect(tree,SIGNAL(itemPressed(QTreeWidgetItem*,int)),this,SLOT(buttonEditEnable(QTreeWidgetItem*)));
@@ -148,6 +149,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(pilealire,SIGNAL(plusALire(QTreeWidgetItem*)),this,SLOT(livrePlusALire(QTreeWidgetItem*)));
     QObject::connect(pilealire,SIGNAL(plusALire(QTreeWidgetItem*)),pilealire,SLOT(test()));
     QObject::connect(this,SIGNAL(appClosed()),this,SLOT(save()));
+}
+
+void MainWindow::exportToTxt()
+{
+
 }
 
 void MainWindow::livrePlusALire(QTreeWidgetItem *item)
